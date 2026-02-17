@@ -5,14 +5,14 @@
 #include "AbstractUITask.h"
 
 /*------------ Frame Protocol --------------*/
-#define FIRMWARE_VER_CODE 9
+#define FIRMWARE_VER_CODE 8
 
 #ifndef FIRMWARE_BUILD_DATE
-#define FIRMWARE_BUILD_DATE "15 Feb 2026"
+#define FIRMWARE_BUILD_DATE "29 Jan 2026"
 #endif
 
 #ifndef FIRMWARE_VERSION
-#define FIRMWARE_VERSION "v1.13.0"
+#define FIRMWARE_VERSION "v1.12.0"
 #endif
 
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
@@ -108,7 +108,6 @@ protected:
   int calcRxDelay(float score, uint32_t air_time) const override;
   uint8_t getExtraAckTransmitCount() const override;
   bool filterRecvFloodPacket(mesh::Packet* packet) override;
-  bool allowPacketForward(const mesh::Packet* packet) override;
 
   void sendFloodScoped(const ContactInfo& recipient, mesh::Packet* pkt, uint32_t delay_millis=0) override;
   void sendFloodScoped(const mesh::GroupChannel& channel, mesh::Packet* pkt, uint32_t delay_millis=0) override;
@@ -143,7 +142,7 @@ protected:
   void onTraceRecv(mesh::Packet *packet, uint32_t tag, uint32_t auth_code, uint8_t flags,
                    const uint8_t *path_snrs, const uint8_t *path_hashes, uint8_t path_len) override;
 
-  uint32_t calcFloodTimeoutMillisFor(uint32_t pkt_airtime_millis) const override;
+  uint32_t calcFloodTimeoutMillisFor(uint32_t pkt_airtime_millis, uint8_t attempt = 0) const override;
   uint32_t calcDirectTimeoutMillisFor(uint32_t pkt_airtime_millis, uint8_t path_len) const override;
   void onSendTimeout() override;
 
@@ -177,7 +176,6 @@ private:
 
   void checkCLIRescueCmd();
   void checkSerialInterface();
-  bool isValidClientRepeatFreq(uint32_t f) const;
 
   // helpers, short-cuts
   void saveChannels() { _store->saveChannels(this); }
