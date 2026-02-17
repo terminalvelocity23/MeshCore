@@ -8,6 +8,43 @@
   static UITask ui_task(display);
 #endif
 
+// ========== WATCHDOG ДЛЯ NOISE FLOOR ==========
+#define NOISE_FLOOR_THRESHOLD -120
+#define LOCKUP_MINUTES 1 // если шумовой порог держится на -120 дБм в течение 1 минуты, перезагружаем устройство
+#define CHECK_INTERVAL 15000  // проверка раз в 15 секунд
+
+static unsigned long lastNoiseCheck = 0;
+static unsigned long noiseLockStart = 0;
+static bool noiseLocked = false;
+static int16_t lastNoiseFloor = 0;
+
+extern WRAPPER_CLASS radio_driver;
+
+void checkNoiseFloorWatchdog() {
+    int16_t currentNoise = radio_driver.getNoiseFloor();
+
+    if (currentNoise == NOISE_FLOOR_THRESHOLD) {
+        if (!noiseLocked) {
+            noiseLocked = true;
+            noiseLockStart = millis();
+            Serial.println("⚠️ Noise floor = -120, таймер перезагрузки запущен");
+        } else {
+            unsigned long minutes = (millis() - noiseLockStart) / 60000;
+            if (minutes >= LOCKUP_MINUTES) {
+                Serial.printf("❌ Noise floor = -120 в течение %d минут. Перезагрузка...\n", LOCKUP_MINUTES);
+                delay(200);
+                ESP.restart();
+            }
+        }
+    } else {
+        if (noiseLocked) {
+            Serial.println("✅ Noise floor вышел из -120, таймер сброшен");
+            noiseLocked = false;
+        }
+    }
+}
+// ========== WATCHDOG ДЛЯ NOISE FLOOR ==========
+
 StdRNG fast_rng;
 SimpleMeshTables tables;
 
@@ -129,6 +166,14 @@ void loop() {
 
   the_mesh.loop();
   sensors.loop();
+
+    // ===== ВОТ СЮДА ВСТАВЛЯЕМ =====
+  if (millis() - lastNoiseCheck >= CHECK_INTERVAL) {
+    checkNoiseFloorWatchdog();
+    lastNoiseCheck = millis();
+  }
+  // ===============================
+
 #ifdef DISPLAY_CLASS
   ui_task.loop();
 #endif
