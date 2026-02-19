@@ -10,7 +10,7 @@
 
 // ========== WATCHDOG ДЛЯ NOISE FLOOR ==========
 #define NOISE_FLOOR_THRESHOLD -120
-#define LOCKUP_MINUTES 1 // если шумовой порог держится на -120 дБм в течение 1 минуты, перезагружаем устройство
+#define LOCKUP_MINUTES 5 // если шумовой порог держится на -120 дБм в течение 1 минуты, перезагружаем устройство
 #define CHECK_INTERVAL 15000  // проверка раз в 15 секунд
 
 static unsigned long lastNoiseCheck = 0;
