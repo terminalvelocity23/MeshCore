@@ -34,8 +34,3 @@ inline void sx126xResetAGC(SX126x *radio) {
   r_data |= 0x01;
   radio->writeRegister(0x8B5, &r_data, 1);
 #endif
-  <<<<<<< HEAD
-}
-== == == =
-}
->>>>>>> fixagcreset
