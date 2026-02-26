@@ -42,7 +42,7 @@ OLEDDisplay::OLEDDisplay() {
 	displayWidth = 128;
 	displayHeight = 64;
 	displayBufferSize = displayWidth * displayHeight / 8;
-	color = WHITE;
+	color = GREEN;
 	geometry = GEOMETRY_128_64;
 	textAlignment = TEXT_ALIGN_LEFT;
 	fontData = ArialMT_Plain_10;
@@ -137,7 +137,7 @@ OLEDDISPLAY_COLOR OLEDDisplay::getColor() {
 void OLEDDisplay::setPixel(int16_t x, int16_t y) {
   if (x >= 0 && x < this->width() && y >= 0 && y < this->height()) {
     switch (color) {
-      case WHITE:   buffer[x + (y / 8) * this->width()] |=  (1 << (y & 7)); break;
+      case GREEN:   buffer[x + (y / 8) * this->width()] |=  (1 << (y & 7)); break;
       case BLACK:   buffer[x + (y / 8) * this->width()] &= ~(1 << (y & 7)); break;
       case INVERSE: buffer[x + (y / 8) * this->width()] ^=  (1 << (y & 7)); break;
     }
@@ -147,7 +147,7 @@ void OLEDDisplay::setPixel(int16_t x, int16_t y) {
 void OLEDDisplay::setPixelColor(int16_t x, int16_t y, OLEDDISPLAY_COLOR color) {
   if (x >= 0 && x < this->width() && y >= 0 && y < this->height()) {
     switch (color) {
-      case WHITE:   buffer[x + (y / 8) * this->width()] |=  (1 << (y & 7)); break;
+      case GREEN:   buffer[x + (y / 8) * this->width()] |=  (1 << (y & 7)); break;
       case BLACK:   buffer[x + (y / 8) * this->width()] &= ~(1 << (y & 7)); break;
       case INVERSE: buffer[x + (y / 8) * this->width()] ^=  (1 << (y & 7)); break;
     }
@@ -158,7 +158,7 @@ void OLEDDisplay::clearPixel(int16_t x, int16_t y) {
   if (x >= 0 && x < this->width() && y >= 0 && y < this->height()) {
     switch (color) {
       case BLACK:   buffer[x + (y >> 3) * this->width()] |=  (1 << (y & 7)); break;
-      case WHITE:   buffer[x + (y >> 3) * this->width()] &= ~(1 << (y & 7)); break;
+      case GREEN:   buffer[x + (y >> 3) * this->width()] &= ~(1 << (y & 7)); break;
       case INVERSE: buffer[x + (y >> 3) * this->width()] ^=  (1 << (y & 7)); break;
     }
   }
@@ -409,7 +409,7 @@ void OLEDDisplay::drawHorizontalLine(int16_t x, int16_t y, int16_t length) {
   uint8_t drawBit = 1 << (y & 7);
 
   switch (color) {
-    case WHITE:   while (length--) {
+    case GREEN:   while (length--) {
         *bufferPtr++ |= drawBit;
       }; break;
     case BLACK:   drawBit = ~drawBit;   while (length--) {
@@ -452,7 +452,7 @@ void OLEDDisplay::drawVerticalLine(int16_t x, int16_t y, int16_t length) {
     }
 
     switch (color) {
-      case WHITE:   *bufferPtr |=  drawBit; break;
+      case GREEN:   *bufferPtr |=  drawBit; break;
       case BLACK:   *bufferPtr &= ~drawBit; break;
       case INVERSE: *bufferPtr ^=  drawBit; break;
     }
@@ -465,9 +465,9 @@ void OLEDDisplay::drawVerticalLine(int16_t x, int16_t y, int16_t length) {
 
   if (length >= 8) {
     switch (color) {
-      case WHITE:
+      case GREEN:
       case BLACK:
-        drawBit = (color == WHITE) ? 0xFF : 0x00;
+        drawBit = (color == GREEN) ? 0xFF : 0x00;
         do {
           *bufferPtr = drawBit;
           bufferPtr += this->width();
@@ -487,7 +487,7 @@ void OLEDDisplay::drawVerticalLine(int16_t x, int16_t y, int16_t length) {
   if (length > 0) {
     drawBit = (1 << (length & 7)) - 1;
     switch (color) {
-      case WHITE:   *bufferPtr |=  drawBit; break;
+      case GREEN:   *bufferPtr |=  drawBit; break;
       case BLACK:   *bufferPtr &= ~drawBit; break;
       case INVERSE: *bufferPtr ^=  drawBit; break;
     }
@@ -501,7 +501,7 @@ void OLEDDisplay::drawProgressBar(uint16_t x, uint16_t y, uint16_t width, uint16
   uint16_t doubleRadius = 2 * radius;
   uint16_t innerRadius = radius - 2;
 
-  setColor(WHITE);
+  setColor(GREEN);
   drawCircleQuads(xRadius, yRadius, radius, 0b00000110);
   drawHorizontalLine(xRadius, y, width - doubleRadius + 1);
   drawHorizontalLine(xRadius, y + height, width - doubleRadius + 1);
@@ -544,7 +544,7 @@ void OLEDDisplay::drawIco16x16(int16_t xMove, int16_t yMove, const uint8_t *ico,
     data = pgm_read_byte(ico + (y << 1)) + (pgm_read_byte(ico + (y << 1) + 1) << 8);
     for(int16_t x = 0; x < 16; x++ ) {
       if ((data & 0x01) ^ inverse) {
-        setPixelColor(xMove + x, yMove + y, WHITE);
+        setPixelColor(xMove + x, yMove + y, GREEN);
       } else {
         setPixelColor(xMove + x, yMove + y, BLACK);
       }
@@ -1085,14 +1085,14 @@ void inline OLEDDisplay::drawInternal(int16_t xMove, int16_t yMove, int16_t widt
 
       if (yOffset >= 0) {
         switch (this->color) {
-          case WHITE:   buffer[dataPos] |= currentByte << yOffset; break;
+          case GREEN:   buffer[dataPos] |= currentByte << yOffset; break;
           case BLACK:   buffer[dataPos] &= ~(currentByte << yOffset); break;
           case INVERSE: buffer[dataPos] ^= currentByte << yOffset; break;
         }
 
         if (dataPos < (displayBufferSize - this->width())) {
           switch (this->color) {
-            case WHITE:   buffer[dataPos + this->width()] |= currentByte >> (8 - yOffset); break;
+            case GREEN:   buffer[dataPos + this->width()] |= currentByte >> (8 - yOffset); break;
             case BLACK:   buffer[dataPos + this->width()] &= ~(currentByte >> (8 - yOffset)); break;
             case INVERSE: buffer[dataPos + this->width()] ^= currentByte >> (8 - yOffset); break;
           }
@@ -1102,7 +1102,7 @@ void inline OLEDDisplay::drawInternal(int16_t xMove, int16_t yMove, int16_t widt
         yOffset = -yOffset;
 
         switch (this->color) {
-          case WHITE:   buffer[dataPos] |= currentByte >> yOffset; break;
+          case GREEN:   buffer[dataPos] |= currentByte >> yOffset; break;
           case BLACK:   buffer[dataPos] &= ~(currentByte >> yOffset); break;
           case INVERSE: buffer[dataPos] ^= currentByte >> yOffset; break;
         }

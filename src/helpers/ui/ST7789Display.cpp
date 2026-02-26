@@ -78,7 +78,7 @@ void ST7789Display::clear() {
 
 void ST7789Display::startFrame(Color bkg) {
   display.clear();
-  _color = ST77XX_WHITE;
+  _color = ST77XX_GREEN;
   display.setRGB(_color);
   display.setFont(ArialMT_Plain_16);
 }
@@ -123,8 +123,8 @@ void ST7789Display::setColor(Color c) {
       break;
 #endif
     default:
-      _color = ST77XX_WHITE;
-      display.setColor(OLEDDISPLAY_COLOR::WHITE);
+      _color = ST77XX_GREEN;
+      display.setColor(OLEDDISPLAY_COLOR::GREEN);
       break;
   }
   display.setRGB(_color);
