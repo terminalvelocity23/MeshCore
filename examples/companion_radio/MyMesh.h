@@ -5,7 +5,7 @@
 #include "AbstractUITask.h"
 
 /*------------ Frame Protocol --------------*/
-#define FIRMWARE_VER_CODE 9
+#define FIRMWARE_VER_CODE 10
 
 #ifndef FIRMWARE_BUILD_DATE
 #define FIRMWARE_BUILD_DATE "15 Feb 2026"
@@ -119,6 +119,7 @@ protected:
   bool isAutoAddEnabled() const override;
   bool shouldAutoAddContactType(uint8_t type) const override;
   bool shouldOverwriteWhenFull() const override;
+  uint8_t getAutoAddMaxHops() const override;
   void onContactsFull() override;
   void onContactOverwrite(const uint8_t* pub_key) override;
   bool onContactPathRecv(ContactInfo& from, uint8_t* in_path, uint8_t in_path_len, uint8_t* out_path, uint8_t out_path_len, uint8_t extra_type, uint8_t* extra, uint8_t extra_len) override;
@@ -145,7 +146,7 @@ protected:
   void onTraceRecv(mesh::Packet *packet, uint32_t tag, uint32_t auth_code, uint8_t flags,
                    const uint8_t *path_snrs, const uint8_t *path_hashes, uint8_t path_len) override;
 
-  uint32_t calcFloodTimeoutMillisFor(uint32_t pkt_airtime_millis) const override;
+  uint32_t calcFloodTimeoutMillisFor(uint32_t pkt_airtime_millis, uint8_t attempt = 0) const override;
   uint32_t calcDirectTimeoutMillisFor(uint32_t pkt_airtime_millis, uint8_t path_len) const override;
   void onSendTimeout() override;
 
