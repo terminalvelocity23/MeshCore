@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "target.h"
 
-LilygoT3S3SX1276Board board;
+ESP32Board board;
 
 #if defined(P_LORA_SCLK)
   static SPIClass spi;
