@@ -2064,8 +2064,3 @@ bool MyMesh::advert() {
     return false;
   }
 }
-
-// Check if there is pending work (packets to send)
-bool MyMesh::hasPendingWork() const {
-  return _mgr->getOutboundCount(0xFFFFFFFF) > 0;
-}

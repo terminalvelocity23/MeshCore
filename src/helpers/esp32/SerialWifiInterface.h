@@ -8,8 +8,6 @@ class SerialWifiInterface : public BaseSerialInterface {
   bool _isEnabled;
   unsigned long _last_write;
   unsigned long adv_restart_time;
-  const char* _ssid;
-  const char* _password;
 
   WiFiServer server;
   WiFiClient client;
@@ -41,8 +39,6 @@ public:
     deviceConnected = false;
     _isEnabled = false;
     _last_write = 0;
-    _ssid = nullptr;
-    _password = nullptr;
     send_queue_len = recv_queue_len = 0;
     received_frame_header.type = 0;
     received_frame_header.length = 0;
