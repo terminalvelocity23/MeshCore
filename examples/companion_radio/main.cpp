@@ -227,7 +227,8 @@ void loop() {
   rtc_clock.tick();
 
 #if defined(NRF52_PLATFORM)
-  board.sleep(1800);
+  if (!the_mesh.hasPendingWork()) {
+    board.sleep(1800);
+  }
 #endif
-
 }

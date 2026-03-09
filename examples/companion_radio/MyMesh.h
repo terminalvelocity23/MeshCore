@@ -163,6 +163,12 @@ protected:
 public:
   void savePrefs() { _store->savePrefs(_prefs, sensors.node_lat, sensors.node_lon); }
 
+  bool hasPendingWork() {
+    // Проверяем, есть ли исходящие пакеты в очереди
+    return _mgr->getOutboundCount(0xFFFFFFFF) > 0;
+  }
+
+
 private:
   void writeOKFrame();
   void writeErrFrame(uint8_t err_code);
