@@ -165,11 +165,11 @@ protected:
 public:
   void savePrefs() { _store->savePrefs(_prefs, sensors.node_lat, sensors.node_lon); }
 
-#if ENV_INCLUDE_GPS == 1
-  void applyGpsPrefs() {
-    sensors.setSettingValue("gps", _prefs.gps_enabled ? "1" : "0");
+  bool hasPendingWork() {
+    // Проверяем, есть ли исходящие пакеты в очереди
+    return _mgr->getOutboundCount(0xFFFFFFFF) > 0;
   }
-#endif
+
 
 private:
   void writeOKFrame();
