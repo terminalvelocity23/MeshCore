@@ -22,8 +22,6 @@ public:
     _radio->setPreambleLength(16); // overcomes weird issues with small and big pkts
   }
 
-  void setCodingRate(uint8_t cr) override { ((CustomLR1110 *)_radio)->setCodingRate(cr); }
-
   float getLastRSSI() const override { return ((CustomLR1110 *)_radio)->getRSSI(); }
   float getLastSNR() const override { return ((CustomLR1110 *)_radio)->getSNR(); }
 
