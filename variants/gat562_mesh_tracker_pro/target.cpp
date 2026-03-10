@@ -2,20 +2,21 @@
 #include "target.h"
 #include <helpers/ArduinoHelpers.h>
 
-RAK4631Board board;
+GAT562MeshTrackerProBoard board;
 
 #ifndef PIN_USER_BTN
   #define PIN_USER_BTN (-1)
 #endif
 
+
 #ifdef DISPLAY_CLASS
   DISPLAY_CLASS display;
-  MomentaryButton user_btn(PIN_USER_BTN, 1000, true, true);
-
-  #if defined(PIN_USER_BTN_ANA)
-  MomentaryButton analog_btn(PIN_USER_BTN_ANA, 1000, 20);
-  #endif
+  MomentaryButton user_btn(PIN_USER_BTN, 1000, true, false, false);
+  MomentaryButton joystick_left(JOYSTICK_LEFT, 1000, true, false, false);
+  MomentaryButton joystick_right(JOYSTICK_RIGHT, 1000, true, false, false);
+  MomentaryButton back_btn(PIN_BACK_BTN, 1000, true, false, true);
 #endif
+
 
 RADIO_CLASS radio = new Module(P_LORA_NSS, P_LORA_DIO_1, P_LORA_RESET, P_LORA_BUSY, SPI);
 
@@ -56,4 +57,3 @@ mesh::LocalIdentity radio_new_identity() {
   RadioNoiseListener rng(radio);
   return mesh::LocalIdentity(&rng);  // create new random identity
 }
-
