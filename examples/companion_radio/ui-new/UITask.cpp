@@ -12,9 +12,9 @@
 #define BOOT_SCREEN_MILLIS   3000   // 3 seconds
 
 #ifdef PIN_STATUS_LED
-#define LED_ON_MILLIS     20
-#define LED_ON_MSG_MILLIS 200
-#define LED_CYCLE_MILLIS  4000
+#define LED_ON_MILLIS     5
+#define LED_ON_MSG_MILLIS 5
+#define LED_CYCLE_MILLIS  10000
 #endif
 
 #define LONG_PRESS_MILLIS   1200
@@ -207,7 +207,7 @@ public:
       display.setColor(DisplayDriver::YELLOW);
       display.setTextSize(2);
       sprintf(tmp, "MSG: %d", _task->getMsgCount());
-      display.drawTextCentered(display.width() / 2, 20, tmp);
+      display.drawTextCentered(display.width() / 2, 20, tmp); 
 
       #ifdef WIFI_SSID
         IPAddress ip = WiFi.localIP();
@@ -233,7 +233,7 @@ public:
       for (int i = 0; i < UI_RECENT_LIST_SIZE; i++, y += 11) {
         auto a = &recent[i];
         if (a->name[0] == 0) continue;  // empty slot
-        int secs = _rtc->getCurrentTime() - a->recv_timestamp;
+        uint32_t secs = safeElapsedSecs(_rtc->getCurrentTime(), a->recv_timestamp);
         if (secs < 60) {
           sprintf(tmp, "%ds", secs);
         } else if (secs < 60*60) {
@@ -496,7 +496,7 @@ public:
 
     auto p = &unread[head];
 
-    int secs = _rtc->getCurrentTime() - p->timestamp;
+    uint32_t secs = safeElapsedSecs(_rtc->getCurrentTime(), p->timestamp);
     if (secs < 60) {
       sprintf(tmp, "%ds", secs);
     } else if (secs < 60*60) {
@@ -637,20 +637,16 @@ void UITask::msgRead(int msgcount) {
 }
 
 void UITask::newMsg(uint8_t path_len, const char* from_name, const char* text, int msgcount) {
+  // Только обновляем счетчик сообщений
   _msgcount = msgcount;
-
-  ((MsgPreviewScreen *) msg_preview)->addPreview(path_len, from_name, text);
-  setCurrScreen(msg_preview);
-
-  if (_display != NULL) {
-    if (!_display->isOn() && !hasConnection()) {
-      _display->turnOn();
-    }
-    if (_display->isOn()) {
-    _auto_off = millis() + AUTO_OFF_MILLIS;  // extend the auto-off timer
-    _next_refresh = 100;  // trigger refresh
-    }
-  }
+  
+  // Короткая вибрация для уведомления (если есть вибромотор)
+  #ifdef PIN_VIBRATION
+  vibration.trigger();
+  #endif
+  
+  // LED все равно будет мигать благодаря userLedHandler()
+  // Экран НЕ включается, сообщения НЕ сохраняются, ничего не показывает
 }
 
 void UITask::userLedHandler() {
