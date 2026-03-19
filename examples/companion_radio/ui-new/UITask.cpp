@@ -12,9 +12,9 @@
 #define BOOT_SCREEN_MILLIS   3000   // 3 seconds
 
 #ifdef PIN_STATUS_LED
-#define LED_ON_MILLIS     20
-#define LED_ON_MSG_MILLIS 200
-#define LED_CYCLE_MILLIS  4000
+#define LED_ON_MILLIS     5
+#define LED_ON_MSG_MILLIS 5
+#define LED_CYCLE_MILLIS  10000
 #endif
 
 #define LONG_PRESS_MILLIS   1200
