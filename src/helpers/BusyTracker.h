@@ -14,13 +14,13 @@
 #endif
 
 #ifndef GROUP_FLOOD_MAX
-  #define GROUP_FLOOD_MAX  8    // max group reach when quiet. 0 = no group forwarding.
+  #define GROUP_FLOOD_MAX  16    // max group reach when quiet. 0 = no group forwarding.
 #endif
 #ifndef GROUP_FLOOD_MID
-  #define GROUP_FLOOD_MID  5    // knee point at moderate congestion
+  #define GROUP_FLOOD_MID  8    // knee point at moderate congestion
 #endif
 #ifndef GROUP_FLOOD_FLOOR
-  #define GROUP_FLOOD_FLOOR 2   // minimum group reach under extreme congestion
+  #define GROUP_FLOOD_FLOOR 4   // minimum group reach under extreme congestion
 #endif
 
 #ifndef ADVERT_FLOOD_MAX
