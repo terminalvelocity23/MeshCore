@@ -1,0 +1,586 @@
+d6380e46 Merge remote-tracking branch 'upstream' into main.14.1
+467959cc * version 1.14.1
+deb3b893 Reapply "Merge branch 'ble_sleep' into main.14"
+92bef49c Merge branch 'dev' into 2026/remote-lna
+274e00df Merge remote-tracking branch 'upstream/dev' into 2026/remote-lna
+fa33c45a Merge branch 'allow-older-time' into main.14.1
+45e06179 add agc reset to companions
+65eb761a Merge branch 'snr-drives-cr' into main.14.1
+51064e21 add activity checks for NRF sleep
+f07e1313 disable last message screen, GPS screen
+7434732c Merge branch 'nrf52-sleep' into main.14
+7c61edb2 Revert "Merge branch 'ble_sleep' into main.14"
+cf0cc851 Merge pull request #1297 from ViezeVingertjes/feature/duty-cycle-token-bucket
+e9594d18 Merge branch 'ble_sleep' into main.14
+c0bfb2db Merge branch 'remote-lna' into main.14
+29be7e29 Merge pull request #1877 from DanielNovak/fix-countbefore-sentinel-regression
+436f4e77 Merge remote-tracking branch 'upstream' into main.14
+3fe2dd7f * ver 1.14.0
+9a95e25e Remove unused RX boosted gain mode functions and related preprocessor directives across multiple variants
+f858f2e4 Rename sx126x_rx_boosted_gain to rx_boosted_gain
+8df87d56 Merge remote-tracking branch 'upstream/dev' into 2026/remote-lna
+2db37f6b Allow setting RTC clock backwards and fix elapsed-time underflow
+ab2b4d1b Short sleep cycle when phone disconnects from BLE companion radio
+a79f0a4a Fix millis() overflow in companion powersave sleep timing
+40b479bd Save some more power when BLE/WiFi is disabled on the companion radio
+0d7e48c0 Be more patient: increase companion timeouts
+1d190ad9 Clamp max_hops to 64 to cover full protocol hop range (0-63)
+2cb08775 Clarify comment wording: 1 = direct (0 hops)
+c016db86 Address PR review: subtract-1 encoding and clamp max_hops
+00566741 Add configurable max hops filter for auto-add contacts
+c7568a8d Replace 0xFFFFFFFF sentinel with explicit getOutboundTotal()
+64a16d7a Merge branch 'dev' into 2026/remote-lna
+8bf63256 Fix remote LNA toggle bugs: correct register comparison, add missing implementations, wire up companion radio
+b14879ce * CMD_GET_ADVERT_PATH bug fix
+213d0850 * revert CMD_SEND_SELF_ADVERT,  use _prefs.path_hash_mode
+5b0884ad * added CMD_SET_PATH_HASH_MODE
+e52d57c0 * companion: new pref: path_hash_mode (0..2) * companion: new field in CMD_SET_OTHER_PARAMS, path_hash_mode * companion: CMD_SEND_SELF_ADVERT, cmd_frame[1] now holds the path hash size (0 = zero hop, 1..3 = flood path hash size)
+a66773ba * CommonCLI: added "get/set path.hash.mode "
+3e76161e * refactor of Contact/Client out_path_len (stored in files), from signed to unsigned byte (+2 squashed commits) Squashed commits: [f326e25] * misc [fa5152e] * new 'path mode' parsing in Dispatcher
+5a64fd3a nrf52: make companion sleep when idle
+2e002981 * companion: retransmit delays now hard-coded (only for client repeat mode)
+e2571acc * ver 1.13.0
+a6e741e3 Merge pull request #1672 from ChaoticLeah/feature/mute-buzzer-icon
+0abac357 * client_repeat state now in _DEVICE_INFO response
+564a19d1 * companion client repeat mode support
+fb025fb6 Add muted icon to show when buzzer is muted
+bafa2ccd fix estimated timeout for multi byte path traces
+e8646f5e Parse as signed int
+d0720c63 Allow negative tx power
+4b9d5462 Merge pull request #1532 from oltaco/esp32board.h-removewifi
+598489be refactor ui with ring buffer and display most recent
+8d5eaf50 add makeBlobPath inline helper for esp32
+e6e1b810  add DataStore::deleteBlobByKey()
+06a83c04 Merge pull request #1531 from agessaman/add-recv-errors-stats
+019bbf74 Add recv_errors to CMD_GET_STATS STATS_TYPE_PACKETS response
+c7eea391 fix: remove esp_wifi.h from esp32board.h
+cf7d95c6 Merge pull request #1509 from stevenlafl/tbeam-1w
+c345f1da Revert "Remove _serial->isConnected() logic from buzzer notifications"
+465776d6 * ver 1.12.0
+44e7c092 Add battery min/max voltage parameter support
+96ef5e5e allow set prv.key from remote, validate new prv.key
+3c271329 * T1000e BLE - default node name is now the MAC address
+d68bc745 Remove _serial->isConnected() logic from buzzer notifications
+b919119f only write contacts when changed
+c61fde93 always send PUSH_CODE_NEW_ADVERT when advert was not added to contacts[]
+df668703 bootstrap RTC from contact.lastmod and improve slot overwrite logic
+403ce1db contacts: granular autoadd and overwrite-oldest
+eb4fa032 Implement token bucket duty cycle enforcement
+3af25495 * Repeater: new anon request sub-type: ANON_REQ_TYPE_REGIONS  (rate limited to max 4 every 3 mins) * Companion: new CMD_SEND_ANON_REQ command (reply with existing RESP_CODE_SENT frame)
+e31c46ff Merge pull request #1294 from liquidraver/factorynvsreset
+faf177de ESP factory reset clear NVS too
+4a869163 BUGFIX: replay protection on repeaters tripped by timestamp sent from companion node mobile app. Send the node's RTC timestamp for TXT_TYPE_CLI_DATA messages instead of the timestamp from the app (matches the sendRequest() code logic).
+e855706a move showalert after saveprefs
+638f41d1 calculate shared_secret on demand
+01f7a3c9 Merge pull request #1057 from liquidraver/wiodev
+0082149c Merge pull request #996 from mattzzw/dev
+acc32aa1 Merge pull request #1156 from csrutil/persist-gps
+052f1773 add default LED_STATE_ON for boards that don't have it defined
+e054597a * ver 1.11.0
+cfb7ed87 CMD_SET_CUSTOM_VAR will update gps and gps_interval
+39503ad0 move GPS preference initialization to UITask
+4aebc57a fixed gps init value
+678915ef add GPS interval validation and bounds checking
+88fb1732 add configurable GPS update interval
+c641beab https://github.com/meshcore-dev/MeshCore/issues/989 - persist GPS enabled state to preferences
+fe874032 Merge pull request #1153 from fdlamotte/thinknode_m5
+1c0017b6 thinknode_m5: gps support
+ee4e87c3 thinknode_m5: manage baclight
+5b975d9e Merge branch 'dev' into ext-trace
+13bf82f1 Merge pull request #1130 from zaquaz/buzzer-feature-pr
+6c7b5390 Remove default setting, since it is handled in MyMesh
+c17bd5d6 Merge pull request #1122 from fschrempf/xiao-nrf-ui-and-power-optimizations
+cdbeacdc Merge branch 'dev' into ext-trace
+f2740150 Merge pull request #1075 from agessaman/companion-stats
+048bd268 companion: ui: Respect LED_STATE_ON for status LED
+07e7e2d4 companion: Suspend radio when hibernating
+b33d226c * proposal for 'Extended Trace' packets. Using 'flags' byte, lower 2 bits, for path hash size.
+2bd47de3 Added buzzer config persistance accross restart
+a3c9a073 Modify CMD_GET_STATS with sub-types for core, radio, and packet statistics. Consolidated to a single RESP_CODE_STATS with a second byte to identify response structure. Updated documentation and examples to reflect the new command structure and response parsing.
+16c294ce Allow SF smaller than 7 to be saved
+91e9fcea * ver 1.10.0
+39f83efb Remove unused statistics formatting methods and associated header includes from MyMesh class. Whoops.
+80d6dd43 Update statistics handling to use binary frames instead of JSON formatting for consistency with other companion commands. Added documentation of frame structure with code examples.
+c9aa536c Reverted MyMesh constructor for simplicity. Updated formatStatsReply method to use new member variables for statistics handling. Removed excess variable creation
+df4dab85 Add statistics commands and response handling in MyMesh
+28b90c18 Merge branch 'transportcodes' into dev
+2e63499a * companion: protocol ver bumped to 8.
+4a5404d9 * companion: added CMD_SEND_CONTROL_DATA, and PUSH_CODE_CONTROL_DATA
+937865c8 * companion: new CMD_SET_FLOOD_SCOPE (54)
+9ebeb477 * RegionMap: inverted 'flags' to _deny_ bits * Mesh: new filterRecvFloodPacket() for overriding * repeater CLI: 'allow' -> 'allowf' or 'denyf'
+99a34731 even less comments \o/
+eae16cfc less unnecessary comments, less lines of code :)
+397d280c stop OLED powering on every message if connected to phone
+d9ff3a4d * Mesh: new sendFlood() overload with transport codes. * BaseChatMesh:  sendFloodScoped(), for overriding with some outbound 'scope' / TransportKey * companion: new 'send_scope' variable.
+c13b4ae4 Analogue button delay based on millis
+ef752926 Merge pull request #1036 from oltaco/datastore-refactor
+7ad45d11 Merge pull request #993 from recrof/allow_lower_bw_sf
+52a3df49 revert pubBlobByKey() change
+0b8159c6 refactor DataStore to use openRead() and openWrite()
+3d9378d9 * Fix for VolatileRTCClock wrapping around to initial synced time every 49 days
+f339c74b * Add #ifdef, reuse variable
+a38418e0 * Add display of IP address to companion screen
+87677fda allow spreading factor from 5 and bandwidth from 7.8kHz
+7d62a278 uitask: bring back buzzer toggle on tracker l1
+cd920693 * UITask: new UI_HAS_JOYSTICK * MomentaryButton: new constructor 'multiclick' param * WIoTrackerL1: now just use joystick, joystick press for KEY_ENTER, no multi-click for snappier UI
+3912bbdf Merge pull request #821 from fdlamotte/ui_gps_page
+8d8b9a61 * ver 1.9.1
+18bfc2d8 DisplayDriver: introduce drawTextRightAlign and drawTextLeftAlign
+b92d9bd9 * ver 1.9.0
+db763510 gps_page: enable if gps enabled
+418ae08b add FIRMWARE_VER_LEVEL to companion PUSH_CODE_LOGIN_SUCCESS
+a5af1b5b * companion: disabled processing/sending of keep_alive packets (deprecated) * FIRMWARE_VER_LEVEL now moved to end of response payloads
+76aa7cf4 ui_task: initial gps page
+52d5cc60 * tidy and minor fix for offline queue deletion
+28d673ee Merge pull request #796 from 446564/mutable-queue
+2922b628 add bounds check to _countLfsBlock / _getLfsUsedBlockCount
+384b02be * GenericVibration: code style refactor
+b3e9fd76 Merge pull request #708 from csrutil/feature/vibration-feedback
+6f8ce425 remove the unnecessary blank line
+043f37a0 ♻️ refactor: unify UI notification methods into single notify() function
+2da50882 ✨ feat: add vibration feedback support for UI events
+bd6aa983 feat: add DisplayDriver methods for UTF-8 filtering and text ellipsis
+fca16f1b make offline queue channel messages mutable
+c69d78b6 Merge branch 'dev' into reciprocal-path-retry
+d83cdc50 ui: use LPPDataHelper and conditionals for sensors page
+2d4b77c9 Merge remote-tracking branch 'upstream/dev' into ui_sensors_page
+74dea260 * proposed change for re-trying reciprocal path transmit
+bcfc8d37 improved RescueCLI for dual FS
+3d835568 refactor: use _getContactsChannelsFS() instead of ifdefs
+accd1e0a nrf52 targets: increase limits for contacts and channels
+2b24c575 support dual filsystems on nrf52
+bdfe9ad2 switch to using QSPI bus for external flash
+c5180d45 initial commit: CustomLFS
+8fdaaceb ui: refresh sensors on gps toggle
+f974cb2a ui: ENTER on SENSORS page toggles gps
+2d651221 ui: sensors page
+5b2c1715 lilygo t-echo cleanup, add AUTO_SHUTDOWN_MILLIVOLTS
+5782c2e7 Merge pull request #720 from oltaco/newui-multiclick-toggles
+9f97edcb gxepd: use a crc to track damage !
+cb3049e7 cleanups (remove statics and typos)
+96a71bb2 alter keycode keycode handling
+a9ab1f07 increase gps/buzzer alert times
+43c3105b wake screen on double and triple clicks
+ce31fd7c multi click support including buzzer toggle
+3cdf2f9b techo: display backlight behavior
+637891b8 * ver bump
+74722c24 * MomentaryButton: added support for analog button (with threshold) * RAK: support for PIN_USER_BTN_ANA
+8b3c16c4 * ver bump
+18ef1ba8 add low battery shutdown alert for thinknode m1
+cb96503b * Companion: new-ui, power off now labelled "hibernate"
+cb8ca91d WioTrackerL1: add joystick left and right for new UI
+ed3f5277 Merge pull request #629 from fdlamotte/techo_ui_tweaks
+b332b063 techo_ui: some tweaks
+276a0576 * lilygo_tlora_v2_1: ui-new
+e14b022a * original UITask now in /ui-orig folder
+acde9921 * Refactor of UITask, moved to /ui-new
+8d7a4986 add support for new companion ui on thinknode m1
+4b95c981 * UI revamp for companion radios
+2824fc31 * CMD_SEND_PATH_DISCOVERY_REQ: now force the sendRequest() to use flood mode
+32e8ce41 *  REQ_TYPE_GET_TELEMETRY_DATA, first reserved byte (of 4) is now inverse mask to apply to permissions
+fcdf342d * Companion: experimental CMD_SEND_DISCOVERY_REQ -> PUSH_CODE_DISCOVERY_RESPONSE
+f87e8563 * companion: fix for CMD_IMPORT_PRIVATE_KEY, to re-calc shared secrets
+f66d900a * companion: bug fix for CMD_ADD_UPDATE_CONTACT
+ad19ac1a * Companion: CMD_ADD_UPDATE_CONTACT now with optional extra 'last_mod' timestamp
+365cb896 * ver bump to 1.7.4
+122f5fa1 Merge pull request #526 from oltaco/uitask-add-gps-alert
+5881b04a * companion: optional double ACKs, new prefs.multi_acks
+57f93a41 add GPS UI alert to quad-press
+f74819f8 * ver bump
+fccb3b6c * companion: added CMD_FACTORY_RESET (51)
+7947e8a2 * simple_sensor: redesigned permissions * companion:  PUSH_CODE_LOGIN_SUCCESS now has extra byte in frame for ACL permissions
+da8bd717 * companion: serial protocol ver bump (FIRMWARE_VER_CODE) now 7
+1930dc34 * companion: reverted PUSH_CODE_TELEMETRY_RESPONSE, added new PUSH_CODE_BINARY_RESPONSE
+df33321b * companion: added CMD_SEND_BINARY_REQ (50)
+781f7e99 * companion: added CMD_GET_TUNING_PARAMS -> RESP_CODE_TUNING_PARAMS
+0914056a tidy logic for devices with display
+7ea6a985 dont show cli data replies on display
+483b3166 * ver bump to v1.7.2
+f8d277de Merge pull request #426 from 446564/feat-GH109
+165fb33d * ver bump to v1.7.1
+12a2f345 * companion serial protocol ver bump to 6
+583cdd49 fix indentation
+37c20a34 add support for storage stats on nrf52
+9df3c8c6 * companion: new 'advert_loc_policy' pref. Defaults to ADVERT_LOC_NONE (ie. do Not share location in adverts)
+1295c463 * companion: minor refactor of who should invoke UITask::loop()
+f4463154 allows manual BLE pin even when device has display
+a7c95963 * companion: added Datastore methods: getStorageUsedKb(), getStorageTotalKb() * companion: CMD_GET_BATTERY now changed to CMD_GET_BATT_AND_STORAGE
+e6ba025f add new quad press
+cdca6fa5 Merge branch 'dev' into analog-button
+b865ac6c * refactored SensorManager::toggleGps()
+ee68401a fixing button handling to allow both button types simultaneously
+588a9869 t1000e: gps toggle not using board class
+8765b3d0 Gps toggle on 4 clicks
+e6ce3c89 * companion: new CMD_GET_ADVERT_PATH -> RESP_CODE_ADVERT_PATH
+7c011324 feedback
+42ef2972 set text width ahead of width calculation
+1bc94c2e minor companion ui fixes
+af0c409c * ver bump to v1.7.0
+c506aba3 Merge pull request #367 from 446564/companion-alerts
+7f79d0c5 close roor dir after listing files
+28edff43 simplify serial print
+a50f89f1 ensure root path is usable
+a814bfb0 don't create file when trying to open for read
+9d574b2d ensure user isn't removing invalid path
+a22c176d add rm command to remove file
+0f601752 implement ls and cat commands for rescue mode
+da5b0f85 add basic alert system to companion UI
+9c833486 * DataStore, advert blob record format change
+dd808ee6 * new nRF52 impl for advert blobs
+6e0b505a * companion: refactor of all filesystem access to new DataStore module
+647d712a * Companion: long-press in first 8 seconds now enters CLI Rescue mode
+1ba69f3b * self telemetry response simpler now
+870b5d2b * companion: 'self telemetry' request with CMD_SEND_TELEMETRY_REQ (with no pubkey param)
+5729d66a * companion: some further refactors after the MyMesh refactor
+884d8f1a Reverting UITask.h changes
+9fe218e0 Reverting format changes to NodePrefs
+4e2786c5 Re-applying 73a7a96, formatting, MyMesh reformat
+40bf7bbb Reverting changes to Button code
+e15ad108 Merge branch 'dev' of https://github.com/ripplebiz/MeshCore into mymesh-refactor2
+a987efec * companion: disabling interference threshold for now
+c13f676e Merge branch 'dev' of https://github.com/ripplebiz/MeshCore into mymesh-refactor2
+f7f96ad3 Reformatting code
+ed6373ed Merge pull request #348 from fdlamotte/gps_time_sync
+ecd2b0be fixing channel name display
+f58a34f5 Refactored MyMesh, advert on doublepress
+08aad733 gps : sync time on fix
+4ec36750 update sound
+cf171af7 add ack for quiet mode
+f69efaf0 removing pinmode
+c445bbea simplify logic
+db8e7279 usability fixes, fix t114 build src filter
+ce87156a cleanup
+e7761dc9 initial button manager
+fec064c1 * companion: interference threshold default (14)
+9ba1d826 Merge pull request #335 from seagull9000/RTTTL-tone-for-shutdown
+b3fc6bed * companion: saveContacts() now deferred for 5 secs (lazy writes)
+049909dd Merge branch 'dev' into RTTTL-tone-for-shutdown
+30488e6f Connect RTTTL  shutdown melody to shutdown procedure Added a new UITask shutdown method to run non-board specific shutdown code.  This avoids having to update all the board files for different hardware.
+0e90b731 * companion: PUSH_CODE_LOGIN_SUCCESS frame, now includes server clock timestamp
+0bad7ee1 * ver bump to 1.6.2
+72d2b056 Merge pull request #327 from seagull9000/RTTTL-tone-for-Channel-Message
+5630533d RTTTL-tone-for-Channel-Message I was a bit remiss in removing the tone for channel message event - this puts one in.
+22b80a9b Merge pull request #289 from adam2872/RAK4631-user-button
+02b6f4a2 * Companion:  telemetry_mode_env added to prefs
+726273f5 Merge branch 'Dev' into RAK4631-user-button
+9a0b6e53 Updated to use #if defined... instead of #ifdef
+d9c1cffa allow setting default node name for companion via build flag
+ecfeb2ff Merge pull request #314 from seagull9000/RTTTL-tweaks1
+7507f889 fix location and naming of enum
+f82844f4 RTTTL on message types
+56b84408 * workaround for nRF + LittleFS glitch with seek/truncate
+7e90d386 * refactored buzzer concept to UITask * moved buzzer.h/cpp to helpers/ui
+be88bea4 initial support for generic RTTTL notifier
+fa045654 Merge pull request #290 from adam2872/Modern-battery-icon
+a73eb982 * big refactor of the 'display' object. Now defined in variants/*/target modules.
+885cfe96 Merge pull request #294 from 446564/SH1106-display
+65d398fc * ver bump to v1.6.1
+25b534a2 add support for SH1106 OLED display
+22ee164f Make the battery fill based on the percentage slightly smaller to give it a more modern look
+faf04332 RAK4631 analogue user button on input 31
+35e1901d wio-e5 : initial port
+d072e7b5 * ver bump to v1.6.0
+810fc8b8 * Heltec tracker: new 'periph_power' shared pin (between Display & GPS)
+0e208f01 Merge pull request #258 from seagull9000/Heltec-Wireless-Tracker-support
+e076e797 Heltec Wireless Tracker support
+f18a3b78 ble pin must be zero or a valid 6 digit pin
+6dd85880 Merge pull request #246 from liamcottle/dev
+a39c000f fix for set_custom_var
+1f06d22b Merge pull request #247 from jquatier/ui-text-width
+bcb64d8a * companion: fix for _GET_STATUS response
+cb80ceee * companion: protocol ver bump to 5 * companion: new prefs: telemetry_mode_base, telemetry_mode_loc * companion: CMD_SET_OTHER_PARAMS, now optionally can set telemetry_modes
+678f36a5 Implement getTextWidth for display classes
+8f32ee61 no need for prefs check before prefs are loaded
+0bccf29f use hex of first 4 bytes of identity public key as default node name
+e442e94e * SensorManager: now can influence advert lat/lon,  new custom name:value pairs for custom settings (eg, gps on/off) * companion: new CMD_GET_CUSTOM_VARS, CMD_SET_CUSTOM_VAR * T1000e: now supports "gps" custom setting (value "0" or "1")
+26f01e06 * companion: new CMD_SEND_TELEMETRY_REQ, PUSH_CODE_TELEMETRY_RESPONSE
+99774f10 * new: SensorManager * BasChatMesh: new onContactRequest(), for PAYLOAD_TYPE_REQ handling. * companion, repeater and room_server: now with basic 'plumbing' to handle REQ_TYPE_GET_TELEMETRY_DATA (0x03). * dependency: added CayenneLPP to libdeps * all target.* modules now with a stub 'sensors' object.
+77f44f72 merge from dev
+05254bd6 t114 display : some fixes
+13654347 Merge branch 'ripplebiz:main' into ui-enhancements
+b614cef9 Merge pull request #228 from liamcottle/dev
+8f5a2ac8 remove pin mode setup from uitask
+f51ab11c companion_radio: greatly reduce the status LED usage
+a87b5231 * RP2040 IdentityStore begin(), to ensure mkdir()
+4d9964ff Correct opens to use "w" filemode instead of "w+" filemode.
+b1c8963e Merge 'dev' into 'feature/rp2040_picow_dev'.
+99246e6b Added Pi PIcoW support in the following modes: - Companion Radio over USB Serial - Repeater - Room Server - Terminal Chat
+9d82911e * ver bump to v1.5.1
+631f5938 * companion: bug fix for 'export contact'
+1e263cab * ver bump to v1.5.0
+7d7692a1 adding connected check
+c34dd2a4 UI: battery indicator, boot screen, radio settings
+2d6c8348 std behaviour
+ea24a12b techo-display: first bits
+f9bc3a1e Merge branch 'dev' into t114-display
+04118f01 * companion: protocol ver (FIRMWARE_VER_CODE) now 4
+34faa496 * new CMD_SET_OTHER_PARAMS (38)
+561d289e Companion: new 'manual_add_contacts' pref. New PUSH_CODE_NEW_ADVERT frames
+cf3d5520 ui : manage colors and ensure fw using ssd1306 still compile
+366461a3 * companion: onRawDataRecv() guard for payload_len too long
+7534c514 display and btn handling starts working ...
+c4d32eba remove unused variables
+28aa94b8 show firmware version and build date on companion screen
+d7e6a361 * ver bump to v1.4.3
+9498d2e8 * ID hash 0x00 and 0xFF now reserved for future.
+c762d88e Merge branch 'dev' into xiao_s3_serial_onpins
+87f47635 initial commit
+4d4a0ae4 init display before radio
+af070af5 show please wait message on companion boot
+87443ad4 clear display on init to avoid static
+fc6aa0ed * ver bump to v1.4.2
+ba938670 * companion: temp fix: logRxRaw() is blowing the MAX_FRAME_SIZE
+c0cb57be * refactor: rtc_clock now defined by variants/*/target modules
+2224bddc * new ESPNOWRadio driver * refactored the examples/*/main.cpp modules, moving radio specifics to variants/*/target modules * new Generic_ESPNOW_* target envs
+88b88cbc * ver bump to 1.4.1
+753e6a69 * flood_advert_interval" now defaults to 3 hours for upgrading nodes (not just fresh install) * companion: "node_prefs" -> "new_prefs" migration
+70101236 * companion: CMD_SEND_TXT_MSG fix for attempt number
+bfb4b1c4 * BIG refactor: 'board' and 'radio' objects now defined in 'target.h/.cpp' * mesh::RTCClock class moved to MeshCore.h
+182c6d47 * minor refactor, SNR from packet
+6a093743 * ver bump to v1.4.0
+fd55837e * companion: CMD_SET_DEVICE_PIN now uint32 param, RESP_CODE_DEVICE_INFO now includes ble_pin
+4aeafbd0 * companion: added CMD_SET_DEVICE_PIN
+c7f79196 Merge pull request #100 from jameshall9327/main
+f08a30cf * companion: RESP_CODE_ERR now has err_code byte
+d1563066 Merge pull request #114 from lincomatic/pr-llcc68
+13679f9f * CMD_SEND_TRACE_PATH, now replies with RESP_CODE_SENT
+807b9bdc * companion support for TRACE packets. (CMD_SEND_TRACE_PATH, PUSH_CODE_TRACE_DATA)
+fe4fdeb2 * redesigned TRACE packet structure
+156741e5 Merge branch 'dev' into trace
+bdeec374 add ProMicroLLCC68 for Faketec w/ LLCC68
+81bf4f0a * companion: SSD1306 display now dynamically detected at runtime.
+395349d2 Merge branch 'dev' into main
+31f85766 * CMD_SIGN_DATA null check
+6056c303 * companion: can now sign arbitrary data (up to 8K)
+9aa2edf9 Merge branch 'dev' into trace
+27aa7a7b * minor refactor for RAK_4631 SerialInterface
+06c66684 Merge pull request #90 from oltaco/faketec-support
+6a4b7463 * some fixes around the powerOff(). Tidy ups
+2edbd92b Added Support for the LilyGo TBeam v1.2 SX1276
+c62f09d9 Merge branch 'ripplebiz:main' into t1000e_ui
+c8104563 Merge branch 'ripplebiz:main' into faketec-support
+658094f6 * ver bump: 1.3.0
+883f591c Merge branch 'ripplebiz:main' into faketec-support
+bb826a26 Merge branch 'ripplebiz:main' into t1000e_ui
+b94fed4e * companion: channel names
+adf9b248 * companion: channels now persisted. RESP_CODE_DEVICE_INFO now includes MAX_CONTACTS (div 2) and MAX_GROUP_CHANNELS
+8c68dbb6 * Companion: new CMD_GET_CHANNEL, CMD_SET_CHANNEL
+f9b2428d * BLE_NAME_PREFIX refactor
+7d572cf4 Merge pull request #74 from ddmunhoz/add-bool-meshcore-prefix
+027b7d83 Added logic to companion_radio firmware to hopefully fix the radio bringup for Faketec with RA01-SH.
+8e793dc5 Faketec board support, including build targets
+4cfdb0ef better handling of BTN_USER_PRESSED definition
+7bb16cd7 enhancement on the UI and support for power off and status_led for t1000e
+2cb742b1 ver bump to 1.2.2
+a259d27c * trying setCRC(1)
+f77a6944 * PUSH_CODE_LOG_RX_DATA: is now just: {snr*4},{rssi},{raw-lora-packet}
+8f609524 * companion: added new PUSH_CODE_LOG_RX_DATA (0x88) for inspecting all received packets
+5acfe524 * new build option: SX126X_RX_BOOSTED_GAIN
+a5fb3acc add: BLE_NAME_PREFIX flag
+808d3933 Version bump to v1.2.1
+cf170915 * display.begin() delayed in setup(). * all firmwares now bumped to v1.2.0
+790898db * companion: better incoming ACK processing (match prev attempts)
+e534e1b5 * companion: FIRMWARE_VER_CODE now bumped to 3. * companion: new RESP_CODE_CONTACT_MSG_RECV_V3, and _CHANNEL_MSG_RECV_V3. (now with packet SNR included)
+b03aac18 Merge branch 'dev' into trace
+1f4a8136 * companion: new command: CMD_GET_CONTACT_BY_KEY (30)
+2dd25711 Added support for LilyGo T-Echo
+b74ae130 Added support for Heltec t114
+a3d46a3e Merge pull request #62 from awolden/awolden/t3lora
+78ee88c9 * companion, HeltecV3: now picks random BLE pin for every session (from boot), unless a (non-zero) one stored in _prefs * companion, WSL3: uses static BLE pin, per build BLE_PIN_CODE define
+86389579 Merge remote-tracking branch 'origin/dev' into awolden/t3lora
+d36da0ed Refactor naming
+86681364 * companion: UITask now shows BLE PIN (when no connection) * companion, HeltecV3: new installs, now chooses random BLE PIN * companion: prefs load/save improvements (sanitises bad values)
+372c2282 * new ui/DisplayDriver classes (just SSD1306Display impl for now) * companion radio: now with optional UITask (enabled by DISPLAY_CLASS config in target/env)
+e1022791 Add support for LilyGo T3 with SX1276 module
+03293be8 new Heltec_v3_companion_radio_wifi target
+45365322 * companion: RESP_CODE_DEVICE_INFO format change.
+1a4063bb * companion radio: connection status now supported (Keep_alive pings, etc)
+88959b6b * companion radio: support for TXT_TYPE_SIGNED_PLAIN
+1209d54d * various changes for CLI support via companion radio
+d81bbe56 * repeater: login now evicts oldest client table entry if full. New RESP_SERVER_LOGIN_OK login response format (with permissions byte) * companion radio: PUSH_CODE_LOGIN_SUCCESS now returns 'permissions' byte (0 for legacy "OK" response)
+d880a48b * companion radio: new CMD_SEND_LOGIN, CMD_SEND_STATUS_REQ
+274bd6dd * new PAYLOAD_TYPE_RAW_CUSTOM
+fc4e5ed5 * new StrHelper::strzcpy()
+f434123e * tidy ups of PRIVATE_KEY_IMPORT/_EXPORT stuff
+9faba8f1 add build flags to enable and disable private key import and export
+6af97749 add new commands to companion firmware to import and export identity private key
+cf63ec94 * companion radio: new CMD_DEVICE_QUERY -> RESP_CODE_DEVICE_INFO, airtime_factor added to CMD_SET_TUNING_PARAMS, CMD_REBOOT change
+72d44a17 Merge pull request #23 from fdlamotte/t1000e_code
+0db15db6 * new Packet type: PAYLOAD_TYPE_TRACE
+769711ff * companion radio: "set af .." now applied, rxdelay now OFF by default. (can set though with new CMD_SET_TUNING_PARAMS)
+a96ecd8b added CMD_GET_BATTERY_VOLTAGE to companion radio
+e8390ebc added CMD_REBOOT to companion radio
+a2fa4caa * companion radio: new CMD_EXPORT_CONTACT, CMD_IMPORT_CONTACT
+65580c76 * companion radio: new CMD_SHARE_CONTACT * room server: push notify loop interval changed to 2 secs
+b4ee9ecf add T1000e conditionals to examples
+67c7fc07 * companion radio: BLE variants now set device name to "MeshCore-{advert-name}"
+a922d071 * ver bumps * companion radio, USB: onSendTimeout() bug fix
+b8d467fb * BaseChatMesh: sendLogin(), onContactResponse() * companion radio: contacts file, new 'sync_since' field
+0eaa11c5 * BaseChatMesh::sendGroupMessage() added * companion radio, RESP_CODE_CHANNEL_MSG_RECV, CMD_SEND_CHANNEL_TXT_MSG
+824f8c13 * companion radio for RAK (USB) now fixed. (thanks to Bernd Giesecke) * experimental NRF52 impl of SerialBLEInterface, and experimental RAK BLE companion radio target
+55531993 * companion radio: _SELF_INFO frames now include current adv_lat, and adv_lon
+9013d992 * new target/envs: Heltec_v2_repeater, Heltec_v2_companion_radio_usb
+eb7fec6f * companion radio: new command frames: CMD_SET_ADVERT_LATLON, CMD_REMOVE_CONTACT
+082be00a Merge branch 'main' into rx_delay
+5e599f14 * companion radio: removed need for reboot after setting radio params or tx power
+53a55f3a * TIMEOUT estimate adjusted * companion radio: new CMD_RESET_PATH
+50421ad4 Merge branch 'main' into rx_delay
+5395214e * companion radio: new RESP_CODE_NO_MORE_MESSAGES response
+55f14d96 Merge branch 'main' into rx_delay
+8b69f09d * companion radio: CMD_SET_RADIO_PARAMS fix
+ab11421c Merge branch 'main' into rx_delay
+4e8d6de7 * companion radio: CMD_GET_DEVICE_TIME now responds with RESP_CODE_CURR_TIME(9) instead of RESP_CODE_OK
+f4229bb1 * companion radio bug fix
+8c9144f7 * added companion radio targets for T3S3 board
+61b09e94 Merge branch 'main' into rx_delay
+6cef0564 * companion radio: offline messages queue
+7da0a5f7 * new RX delays based on SNR
+29e62b9c * IdentityStore::save() was failing on RAK. * Repeater: CLI 'erase' command added.
+a0bb332c * companion radio: new CMD_SET_RADIO_TX_POWER frame,  RESP_CODE_SELF_INFO responses now include tx_power_dbm and MAX_LORA_TX_POWER
+7b31fc8e * refactor: new helpers/nrf52 dir * RAK, startOTAUpdate()
+79f2d65a * BUG FIX: Initial key generation
+5523daad * companion radio: RESP_CODE_END_OF_CONTACTS change
+f9fa913d * companion radio CMD_SET_RADIO_PARAMS
+9af5adb8 * BaseChatMesh::sendMessage(), new est_timeout (OUT) param
+77a7656b * companion_radio: CMD_SEND_TXT_MSG format change
+f46263a2 * ContactInfo, added gps_lat, gps_lon * companion_radio: now also save gps_lat, gps_lon * BaseChatMesh: now parses gps_lat, gps_lon out of Advertisement
+e53f0d07 * refactored BaseChatMesh::sendMessage(), added timestamp param
+fe306a31 * new "contacts2" file format
+dc11fe85 * new env: RAK_4631_companion_radio_usb
+cd81878e * added helpers/ArduinoSerialInterface, for the 'companion radio' * .ini, target envs: Heltec_v3_companion_radio_usb &  Heltec_v3_companion_radio_ble
+d9dc76f1 * new helper for ESP32: SerialBLEInterface * Some refactoring in BaseChatMesh and Terminal Chat * new companion_radio example
+d6380e46 Merge remote-tracking branch 'upstream' into main.14.1
+0e622401 Set AUTO_OFF_MILLIS to 0 for E213, E290
+696323c1 Fix Heltec E213 and E290 e-ink board builds
+1a641a59 t114 green display
+0b1fd580 Fix double claim, eliminate dead code at compile time
+e15503d5 Fix low power consumption issues
+dd2a9044 Refactor display scaling definitions for HELTEC_VISION_MASTER_T190
+c7ac16f0 Add v4-tft code.
+01eb8716 fix(core): optimize GPS loop and add display GPIO safeguards
+fe874032 Merge pull request #1153 from fdlamotte/thinknode_m5
+ee4e87c3 thinknode_m5: manage baclight
+d0f6def4 thinknode_m5: initial port
+3ddfdd47 Revert "add heltec_v4 tft  expansion box"
+310618e6 add heltec_v4 tft  expansion box
+5b4544b9 Merge pull request #889 from fdlamotte/sensecap_indicator
+ce707923 lgfx_display: better handle display class construction
+cd920693 * UITask: new UI_HAS_JOYSTICK * MomentaryButton: new constructor 'multiclick' param * WIoTrackerL1: now just use joystick, joystick press for KEY_ENTER, no multi-click for snappier UI
+70ac8205 add heltec tracker v2 board.
+45ab0e8c sensecap_indicator: initial espnow support
+69e6d697 Fix font and icon scaling issues for TDeck
+3912bbdf Merge pull request #821 from fdlamotte/ui_gps_page
+18bfc2d8 DisplayDriver: introduce drawTextRightAlign and drawTextLeftAlign
+088b8fd9 fix: revert to orignal default scaling and fix it in variant config
+128119fe refactor: remove redundant import statement
+e2fa70d6 chore: refactor to use GxEPD2 fork
+db40a9ce import missing eInk display
+f1008948 LillyGo TDeck support
+59ea6cdb wio-l1-eink initial support
+384b02be * GenericVibration: code style refactor
+b3e9fd76 Merge pull request #708 from csrutil/feature/vibration-feedback
+2da50882 ✨ feat: add vibration feedback support for UI events
+bd6aa983 feat: add DisplayDriver methods for UTF-8 filtering and text ellipsis
+ec332c44 Merge pull request #735 from recrof/t1000_refactor
+816bbf92 t1000 cleanup + move NullDisplayDriver.h to helpers/ui for other variants to use
+f4df94a2 Delete the sensor part and adapt to the latest crc display.
+13d04689 Merge branch 'dev' into dev-meshpocket
+5782c2e7 Merge pull request #720 from oltaco/newui-multiclick-toggles
+9f97edcb gxepd: use a crc to track damage !
+cb3049e7 cleanups (remove statics and typos)
+afbfc6c6 add new keycodes
+9f185303 long press cancels multi click
+5de0dc1f sliding multiclick window
+ce31fd7c multi click support including buzzer toggle
+3cdf2f9b techo: display backlight behavior
+c9671d7d add heltec meshpocket board.
+74722c24 * MomentaryButton: added support for analog button (with threshold) * RAK: support for PIN_USER_BTN_ANA
+bb63f816 Merge pull request #2 from Quency-D/dev
+033706ad lib_build: fix ST7789 so we don't have to add helpers/ui in INC_DIRS
+b332b063 techo_ui: some tweaks
+bd6bd065 Add heltec_vision_master_t190 board.
+a5ebac62 Merge branch 'dev' into new-companion-ui
+9108a709 Merge pull request #612 from Quency-D/dec-heltec_e290
+aa7f9d8d Use the base class to optimize screen display code.
+6d18e2c5 Add heltec_vision_master_e290 board.
+be243a26 Add heltec_vision_master_e213 board.
+e84e3066 * MomentaryButton: pullupdown param moved to constructor
+bed31131 Adding support for Ikoka Stick with Seeed Xiao nRF54 baseboard.
+8d7a4986 add support for new companion ui on thinknode m1
+4b95c981 * UI revamp for companion radios
+1c7c5ecb buzzer: disable when quiet
+ff3e888d formatting
+e417c43c wireless paper board support
+3719c098 increase delay slightly
+d680852c fix t114 display flicker
+4b9eac81 fix 150mA power draw on ThinkNode M1
+9cfeb628 better fonts for GxEPDDisplay
+d47c0cfc add scaling to bitmaps for EPD display, and enable buzzer for Thinknode M1
+7507f889 fix location and naming of enum
+f82844f4 RTTTL on message types
+7e90d386 * refactored buzzer concept to UITask * moved buzzer.h/cpp to helpers/ui
+a73eb982 * big refactor of the 'display' object. Now defined in variants/*/target modules.
+25b534a2 add support for SH1106 OLED display
+810fc8b8 * Heltec tracker: new 'periph_power' shared pin (between Display & GPS)
+60b78976 * ST7735Display: now applies SCALE_X, SCALE_Y
+7a7f4369 * Heltec Wireless Tracker fixes: getTextWidth() missing, PIN_BOARD_SDA/SCL
+0e208f01 Merge pull request #258 from seagull9000/Heltec-Wireless-Tracker-support
+94db70d5 new implementation
+c2ef0a3f Heltec Wireless Tracker support
+941d2d5c fixing scaling of bitmaps for 7789 display
+5780b50a echo, m1: correct display scalling; all nrf52 boards jsons: added debug.openocd_target
+791da53c * ST7789Display: now with SCALE_X,SCALE_Y * fix for GxEPDDisplay
+d3a88e92 T114 Landscape
+67d709b3 T114 Landscape
+136f3d10 * GxEPDDIsplay: driver now applying SCALE_X, SCALE_Y
+458f3090 Merge pull request #243 from recrof/dev
+9d967388 cleanup
+678f36a5 Implement getTextWidth for display classes
+1e031e98 Merge branch 'dev' of github.com:recrof/MeshCore into dev
+05254bd6 t114 display : some fixes
+1c67d1cb change screen rotation and fix bitmap
+154b5e40 New Board: Elecrow ThinkNode M1
+2a7e105c some tests
+2d6c8348 std behaviour
+052ca9f1 fix screen boot
+ea24a12b techo-display: first bits
+cf3d5520 ui : manage colors and ensure fw using ssd1306 still compile
+7534c514 display and btn handling starts working ...
+87443ad4 clear display on init to avoid static
+81bf4f0a * companion: SSD1306 display now dynamically detected at runtime.
+cf170915 * display.begin() delayed in setup(). * all firmwares now bumped to v1.2.0
+372c2282 * new ui/DisplayDriver classes (just SSD1306Display impl for now) * companion radio: now with optional UITask (enabled by DISPLAY_CLASS config in target/env)
+f07e1313 disable last message screen, GPS screen
+82306b71 power cut-off on t114 lowered
+10eacc4e Merge pull request #1316 from weebl2000/allow-negative-tx
+d0720c63 Allow negative tx power
+5cb26b91 Refactor Heltec T114 sensor management
+f0aa12fa Merge remote-tracking branch 'pikolin/T114_sensors' into 2026/t114-sensors
+ab994664 Merge pull request #1549 from Meshcore-Portugal/jbrazio/t114-fix
+22393076 Enable I2C sensors and EnvironmentSensorManager for Heltec T114
+b5248fae Revert "Merge pull request #1428 from etienn01/update-t114-i2c"
+c5b1d302 t114: remove extra DCDC enable
+3f3978c7 Merge branch 'dev' into nrf-dcdc
+e744adfa Merge pull request #1413 from entr0p1/powermgt-nrf52840-v2
+1f59e528 nRF52840 Power Management - Phase 1 - Boot Low VBAT Voltage Lockout
+e51a2d1b Update T114 I2C pins
+4f46ec75 Remove NRF52BoardOTA class and integrate it into NRF52Board
+3b0870e2 variants: Heltec T114: Use DC/DC regulator
+b024b9e1 Deduplicate NRF52 startOTAUpdate()
+93d1560d Use common NRF52 begin() and deduplicate() startup reason init
+87b0e432 Deduplicate reboot() for NRF52 boards
+4504ad4d Added default temperature from ESP32 MCU and NRF52 MCU Added NRF52Board.h and NRF52Board.cpp Modified NRF52 variants to extend from NRF52Board to share common feature
+69a9a0bc Bridge: Add t114 rs232 targets
+7723a4cb variants: Heltec T114: Enable DC/DC regulator
+32d622d9 variants: Heltec T114: Disable LED and GPS when powering off
+f3b20d5e t114 gps
+dfb4497c * T114: enabled GPS page in UITask
+5d495d50 Revert Heltec T114 power savings
+0307b611 increase MAX_NEIGHBOURS from 8 to 50
+e8314c9c new ldscript for extrafs nrf companion envs
+a0e7b47e correct max contacts and channels for some nrf devices
+84623938 Merge pull request #732 from jbrazio/jbrazio/2025_b5813561
+accd1e0a nrf52 targets: increase limits for contacts and channels
+2ef38422 Delete the variant-specific NullDisplayDriver.h and update target.h to use the shared implementation from #735
+d8f80f25 Refactor display driver inclusion for Heltec T114 to support configurations without a display
+1c91298b tidy up heltec_t114 variant
