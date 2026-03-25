@@ -19,8 +19,14 @@ WRAPPER_CLASS radio_driver(radio, board);
 
 VolatileRTCClock fallback_clock;
 AutoDiscoverRTCClock rtc_clock(fallback_clock);
-MicroNMEALocationProvider nmea = MicroNMEALocationProvider(Serial1, &rtc_clock);
-T114SensorManager sensors = T114SensorManager(nmea);
+
+#if ENV_INCLUDE_GPS
+#include <helpers/sensors/MicroNMEALocationProvider.h>
+MicroNMEALocationProvider nmea = MicroNMEALocationProvider(Serial1);
+EnvironmentSensorManager sensors = EnvironmentSensorManager(nmea);
+#else
+EnvironmentSensorManager sensors;
+#endif
 
 #ifdef DISPLAY_CLASS
 DISPLAY_CLASS display;
