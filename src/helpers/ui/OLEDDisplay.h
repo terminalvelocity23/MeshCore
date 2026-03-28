@@ -125,7 +125,7 @@ private:
 
 enum OLEDDISPLAY_COLOR {
   BLACK = 0,
-  GREEN = 1,
+  YELLOW = 1,
   INVERSE = 2
 };
 
