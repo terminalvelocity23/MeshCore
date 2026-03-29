@@ -211,6 +211,7 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
       break;
     }
     case PAYLOAD_TYPE_GRP_DATA: 
+      break; // don't flood route these (until we know their purpose)
     case PAYLOAD_TYPE_GRP_TXT: {
       int i = 0;
       uint8_t channel_hash = pkt->payload[i++];
