@@ -2,6 +2,8 @@
 
 #include <Dispatcher.h>
 
+
+
 namespace mesh {
 
 class GroupChannel {
@@ -32,6 +34,12 @@ class Mesh : public Dispatcher {
   void routeDirectRecvAcks(Packet* packet, uint32_t delay_millis);
   //void routeRecvAcks(Packet* packet, uint32_t delay_millis);
   DispatcherAction forwardMultipartDirect(Packet* pkt);
+
+private:
+    // Для неблокирующей индикации RX
+  uint32_t _rx_led_off_time = 0;
+  bool _rx_led_state = false;
+  uint8_t _rx_flash_count = 0;
 
 protected:
   DispatcherAction onRecvPacket(Packet* pkt) override;
@@ -168,6 +176,9 @@ protected:
   Mesh(Radio& radio, MillisecondClock& ms, RNG& rng, RTCClock& rtc, PacketManager& mgr, MeshTables& tables)
     : Dispatcher(radio, ms, mgr), _rng(&rng), _rtc(&rtc), _tables(&tables)
   {
+      // Добавьте инициализацию здесь:
+  _rx_led_off_time = 0;
+  _rx_led_state = false;
   }
 
   MeshTables* getTables() const { return _tables; }

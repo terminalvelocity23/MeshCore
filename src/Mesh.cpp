@@ -1,14 +1,18 @@
 #include "Mesh.h"
-//#include <Arduino.h>
-
+#include <Arduino.h>
+#define P_LORA_RX_LED 35
 namespace mesh {
 
 void Mesh::begin() {
   Dispatcher::begin();
 }
-
 void Mesh::loop() {
   Dispatcher::loop();
+    // Неблокирующее выключение светодиода RX
+  if (_rx_led_state && _ms->getMillis() > _rx_led_off_time) {
+  digitalWrite(P_LORA_RX_LED, HIGH);
+  _rx_led_state = false;
+  }
 }
 
 bool Mesh::allowPacketForward(const mesh::Packet* packet) { 
@@ -159,6 +163,13 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
                 uint8_t extra_type = data[k++] & 0x0F;   // upper 4 bits reserved for future use
                 uint8_t* extra = &data[k];
                 uint8_t extra_len = len - k;   // remainder of packet (may be padded with zeroes!)
+                    // Индикация RX с продлением
+                    digitalWrite(P_LORA_RX_LED, LOW);
+                    _rx_led_state = true;
+                    uint32_t new_off_time = _ms->getMillis() + 200;
+                    if (new_off_time > _rx_led_off_time) {
+                      _rx_led_off_time = new_off_time;
+                    }// led flash on receive
                 if (onPeerPathRecv(pkt, j, secret, path, path_len, extra_type, extra, extra_len)) {
                   if (pkt->isRouteFlood()) {
                     // send a reciprocal return path to sender, but send DIRECTLY!
@@ -229,6 +240,13 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
           int len = Utils::MACThenDecrypt(channels[j].secret, data, macAndData, pkt->payload_len - i);
           if (len > 0) {  // success!
             onGroupDataRecv(pkt, pkt->getPayloadType(), channels[j], data, len);
+                // Индикация RX с продлением
+                digitalWrite(P_LORA_RX_LED, LOW);
+                _rx_led_state = true;
+                uint32_t new_off_time = _ms->getMillis() + 100;
+                if (new_off_time > _rx_led_off_time) {
+                  _rx_led_off_time = new_off_time;
+                }
             break;
           }
         }
@@ -268,6 +286,12 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
         if (is_ok) {
           MESH_DEBUG_PRINTLN("%s Mesh::onRecvPacket(): valid advertisement received!", getLogDateTime());
           onAdvertRecv(pkt, id, timestamp, app_data, app_data_len);
+              digitalWrite(P_LORA_RX_LED, LOW);
+              _rx_led_state = true;
+              uint32_t new_off_time = _ms->getMillis() + 30;
+              if (new_off_time > _rx_led_off_time) {
+                _rx_led_off_time = new_off_time;
+    }
           action = routeRecvPacket(pkt);
         } else {
           MESH_DEBUG_PRINTLN("%s Mesh::onRecvPacket(): received advertisement with forged signature! (app_data_len=%d)", getLogDateTime(), app_data_len);
