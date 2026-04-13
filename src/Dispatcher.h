@@ -6,6 +6,7 @@
 #include <Utils.h>
 #include <string.h>
 
+#define P_LORA_RX_LED 35   // RX LED pin
 namespace mesh {
 
 /**
@@ -166,7 +167,7 @@ protected:
   virtual uint32_t getCADFailRetryDelay() const;
   virtual uint32_t getCADFailMaxDuration() const;
   virtual int getInterferenceThreshold() const { return 0; }    // disabled by default
-  virtual int getAGCResetInterval() const { return 0; }    // disabled by default
+  virtual int getAGCResetInterval() const { return 20000; }    // disabled by default
   virtual unsigned long getDutyCycleWindowMs() const { return 3600000; }
 
 public:
@@ -197,6 +198,8 @@ private:
   bool tryParsePacket(Packet* pkt, const uint8_t* raw, int len);
   void checkRecv();
   void checkSend();
+  uint32_t _cad_led_off_time = 0;
+  bool _cad_led_state = false;
 };
 
 }

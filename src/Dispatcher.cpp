@@ -1,8 +1,8 @@
 #include "Dispatcher.h"
-
-#if MESH_PACKET_LOGGING
+#include <Arduino.h>
+/* #if MESH_PACKET_LOGGING
   #include <Arduino.h>
-#endif
+#endif */
 
 #include <math.h>
 
@@ -29,6 +29,11 @@ void Dispatcher::begin() {
 
   _radio->begin();
   prev_isrecv_mode = _radio->isInRecvMode();
+      // Инициализация пина и выключение светодиода
+      pinMode(P_LORA_RX_LED, OUTPUT);
+      digitalWrite(P_LORA_RX_LED, HIGH);  // HIGH = выключить
+      _cad_led_state = false;
+      _cad_led_off_time = 0;  
 }
 
 float Dispatcher::getAirtimeBudgetFactor() const {
@@ -69,7 +74,12 @@ void Dispatcher::loop() {
     next_floor_calib_time = futureMillis(NOISE_FLOOR_CALIB_INTERVAL);
   }
   _radio->loop();
-
+      // ========== НЕБЛОКИРУЮЩЕЕ ВЫКЛЮЧЕНИЕ CAD-СВЕТОДИОДА ==========
+      if (_cad_led_state && _ms->getMillis() > _cad_led_off_time) {
+        digitalWrite(P_LORA_RX_LED, HIGH);  // HIGH = выключить
+        _cad_led_state = false;
+      }
+      // ============================================================
   // check for radio 'stuck' in mode other than Rx
   bool is_recv = _radio->isInRecvMode();
   if (is_recv != prev_isrecv_mode) {
@@ -288,6 +298,10 @@ void Dispatcher::checkSend() {
   if (_radio->isReceiving()) {
     if (cad_busy_start == 0) {
       cad_busy_start = _ms->getMillis();   // record when CAD busy state started
+          // Включаем светодиод (LOW) и ставим таймер на выключение
+      digitalWrite(P_LORA_RX_LED, LOW);
+      _cad_led_state = true;
+      _cad_led_off_time = _ms->getMillis() + 5;  // 5 мс вспышка
     }
 
     if (_ms->getMillis() - cad_busy_start > getCADFailMaxDuration()) {

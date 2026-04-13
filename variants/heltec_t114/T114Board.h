@@ -8,6 +8,7 @@
 #define  PIN_VBAT_READ    4
 #define  PIN_BAT_CTL      6
 #define  MV_LSB   (3000.0F / 4096.0F) // 12-bit ADC with 3.0V input range
+#define P_LORA_RX_LED 35   // RX LED pin
 
 class T114Board : public NRF52BoardDCDC {
 protected:
