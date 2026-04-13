@@ -163,13 +163,6 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
                 uint8_t extra_type = data[k++] & 0x0F;   // upper 4 bits reserved for future use
                 uint8_t* extra = &data[k];
                 uint8_t extra_len = len - k;   // remainder of packet (may be padded with zeroes!)
-                    // Индикация RX с продлением
-                    digitalWrite(P_LORA_RX_LED, LOW);
-                    _rx_led_state = true;
-                    uint32_t new_off_time = _ms->getMillis() + 200;
-                    if (new_off_time > _rx_led_off_time) {
-                      _rx_led_off_time = new_off_time;
-                    }// led flash on receive
                 if (onPeerPathRecv(pkt, j, secret, path, path_len, extra_type, extra, extra_len)) {
                   if (pkt->isRouteFlood()) {
                     // send a reciprocal return path to sender, but send DIRECTLY!
@@ -178,6 +171,13 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
                   }
                 }
               } else {
+                                // Индикация RX для текстовых сообщений и команд
+                digitalWrite(P_LORA_RX_LED, LOW);
+                _rx_led_state = true;
+                uint32_t new_off_time = _ms->getMillis() + 150;  // 150 мс вспышка
+                if (new_off_time > _rx_led_off_time) {
+                  _rx_led_off_time = new_off_time;
+                }
                 onPeerDataRecv(pkt, pkt->getPayloadType(), j, secret, data, len);
               }
               found = true;
@@ -222,6 +222,7 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
       break;
     }
     case PAYLOAD_TYPE_GRP_DATA: 
+      break;  // FUTURE: implement group data packets (encrypted with shared group secret, and tagged with group hash)
     case PAYLOAD_TYPE_GRP_TXT: {
       int i = 0;
       uint8_t channel_hash = pkt->payload[i++];
@@ -243,7 +244,7 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
                 // Индикация RX с продлением
                 digitalWrite(P_LORA_RX_LED, LOW);
                 _rx_led_state = true;
-                uint32_t new_off_time = _ms->getMillis() + 100;
+                uint32_t new_off_time = _ms->getMillis() + 400;  // 400 мс вспышка
                 if (new_off_time > _rx_led_off_time) {
                   _rx_led_off_time = new_off_time;
                 }
@@ -288,7 +289,7 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
           onAdvertRecv(pkt, id, timestamp, app_data, app_data_len);
               digitalWrite(P_LORA_RX_LED, LOW);
               _rx_led_state = true;
-              uint32_t new_off_time = _ms->getMillis() + 30;
+              uint32_t new_off_time = _ms->getMillis() + 20;
               if (new_off_time > _rx_led_off_time) {
                 _rx_led_off_time = new_off_time;
     }
