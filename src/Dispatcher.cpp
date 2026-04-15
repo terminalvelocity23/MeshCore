@@ -299,9 +299,9 @@ void Dispatcher::checkSend() {
     if (cad_busy_start == 0) {
       cad_busy_start = _ms->getMillis();   // record when CAD busy state started
           // Включаем светодиод (LOW) и ставим таймер на выключение
-      digitalWrite(P_LORA_RX_LED, LOW);
+/*      digitalWrite(P_LORA_RX_LED, LOW);
       _cad_led_state = true;
-      _cad_led_off_time = _ms->getMillis() + 5;  // 5 мс вспышка
+      _cad_led_off_time = _ms->getMillis() + 5;  // 5 мс вспышка */
     }
 
     if (_ms->getMillis() - cad_busy_start > getCADFailMaxDuration()) {
