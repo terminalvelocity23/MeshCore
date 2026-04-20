@@ -88,7 +88,8 @@ void CommonCLI::loadPrefsInt(FILESYSTEM* fs, const char* filename) {
     file.read((uint8_t *)&_prefs->adc_multiplier, sizeof(_prefs->adc_multiplier));                 // 166
     file.read((uint8_t *)_prefs->owner_info, sizeof(_prefs->owner_info));                          // 170
     file.read((uint8_t *)&_prefs->rx_boosted_gain, sizeof(_prefs->rx_boosted_gain));              // 290
-    // next: 291
+    file.read((uint8_t *)&_prefs->radio_fem_rxgain, sizeof(_prefs->radio_fem_rxgain));            // 291
+    // next: 292
 
     // sanitise bad pref values
     _prefs->rx_delay_base = constrain(_prefs->rx_delay_base, 0, 20.0f);
@@ -118,6 +119,7 @@ void CommonCLI::loadPrefsInt(FILESYSTEM* fs, const char* filename) {
 
     // sanitise settings
     _prefs->rx_boosted_gain = constrain(_prefs->rx_boosted_gain, 0, 1); // boolean
+    _prefs->radio_fem_rxgain = constrain(_prefs->radio_fem_rxgain, 0, 1); // boolean
 
     file.close();
   }
@@ -179,7 +181,8 @@ void CommonCLI::savePrefs(FILESYSTEM* fs) {
     file.write((uint8_t *)&_prefs->adc_multiplier, sizeof(_prefs->adc_multiplier));                 // 166
     file.write((uint8_t *)_prefs->owner_info, sizeof(_prefs->owner_info));                          // 170
     file.write((uint8_t *)&_prefs->rx_boosted_gain, sizeof(_prefs->rx_boosted_gain));              // 290
-    // next: 291
+    file.write((uint8_t *)&_prefs->radio_fem_rxgain, sizeof(_prefs->radio_fem_rxgain));            // 291
+    // next: 292
 
     file.close();
   }
@@ -207,7 +210,7 @@ uint8_t CommonCLI::buildAdvertData(uint8_t node_type, uint8_t* app_data) {
   }
 }
 
-void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* reply) {
+void CommonCLI::handleCommand(uint32_t sender_timestamp, const char* command, char* reply) {
     if (memcmp(command, "poweroff", 8) == 0 || memcmp(command, "shutdown", 8) == 0) {
       _board->powerOff();  // doesn't return
     } else if (memcmp(command, "reboot", 6) == 0) {
@@ -267,6 +270,7 @@ void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* re
         strcpy(reply, "ERR: bad pubkey");
       }
     } else if (memcmp(command, "tempradio ", 10) == 0) {
+      char tmp[64];
       strcpy(tmp, &command[10]);
       const char *parts[5];
       int num = mesh::Utils::parseTextParts(tmp, parts, 5);
@@ -289,10 +293,6 @@ void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* re
     } else if (memcmp(command, "clear stats", 11) == 0) {
       _callbacks->clearStats();
       strcpy(reply, "(OK - stats reset)");
-    } else if (memcmp(command, "get ", 4) == 0) {
-      handleGetCmd(sender_timestamp, command, reply);
-    } else if (memcmp(command, "set ", 4) == 0) {
-      handleSetCmd(sender_timestamp, command, reply);
     } else if (sender_timestamp == 0 && strcmp(command, "erase") == 0) {
       bool s = _callbacks->formatFileSystem();
       sprintf(reply, "File system erase: %s", s ? "OK" : "Err");
@@ -457,26 +457,18 @@ void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* re
       _callbacks->formatRadioStatsReply(reply);
     } else if (sender_timestamp == 0 && memcmp(command, "stats-core", 10) == 0 && (command[10] == 0 || command[10] == ' ')) {
       _callbacks->formatStatsReply(reply);
+    } else if (memcmp(command, "get ", 4) == 0) {
+      handleGetCmd(sender_timestamp, command, reply);
+    } else if (memcmp(command, "set ", 4) == 0) {
+      handleSetCmd(sender_timestamp, command, reply);
     } else {
       strcpy(reply, "Unknown command");
     }
 }
 
-void CommonCLI::handleSetCmd(uint32_t sender_timestamp, char* command, char* reply) {
+void CommonCLI::handleSetCmd(uint32_t sender_timestamp, const char* command, char* reply) {
   const char* config = &command[4];
-  if (memcmp(config, "dutycycle ", 10) == 0) {
-    float dc = atof(&config[10]);
-    if (dc < 1 || dc > 100) {
-      strcpy(reply, "ERROR: dutycycle must be 1-100");
-    } else {
-      _prefs->airtime_factor = (100.0f / dc) - 1.0f;
-      savePrefs();
-      float actual = 100.0f / (_prefs->airtime_factor + 1.0f);
-      int a_int = (int)actual;
-      int a_frac = (int)((actual - a_int) * 10.0f + 0.5f);
-      sprintf(reply, "OK - %d.%d%%", a_int, a_frac);
-    }
-  } else if (memcmp(config, "af ", 3) == 0) {
+  if (memcmp(config, "af ", 3) == 0) {
     _prefs->airtime_factor = atof(&config[3]);
     savePrefs();
     strcpy(reply, "OK");
@@ -545,14 +537,39 @@ void CommonCLI::handleSetCmd(uint32_t sender_timestamp, char* command, char* rep
     _prefs->disable_fwd = memcmp(&config[7], "off", 3) == 0;
     savePrefs();
     strcpy(reply, _prefs->disable_fwd ? "OK - repeat is now OFF" : "OK - repeat is now ON");
-#if defined(USE_SX1262) || defined(USE_SX1268)
   } else if (memcmp(config, "radio.rxgain ", 13) == 0) {
+#if defined(USE_SX1262) || defined(USE_SX1268)
     _prefs->rx_boosted_gain = memcmp(&config[13], "on", 2) == 0;
     strcpy(reply, "OK");
     savePrefs();
     _callbacks->setRxBoostedGain(_prefs->rx_boosted_gain);
+#else
+    strcpy(reply, "Error: unsupported by this board");
 #endif
+  } else if (memcmp(config, "radio.fem.rxgain ", 17) == 0) {
+    if (!_board->canControlLoRaFemLna()) {
+      strcpy(reply, "Error: unsupported by this board");
+    } else if (memcmp(&config[17], "on", 2) == 0) {
+      if (_board->setLoRaFemLnaEnabled(true)) {
+        _prefs->radio_fem_rxgain = 1;
+        savePrefs();
+        strcpy(reply, "OK - LoRa FEM RX gain on");
+      } else {
+        strcpy(reply, "Error: failed to apply LoRa FEM RX gain");
+      }
+    } else if (memcmp(&config[17], "off", 3) == 0) {
+      if (_board->setLoRaFemLnaEnabled(false)) {
+        _prefs->radio_fem_rxgain = 0;
+        savePrefs();
+        strcpy(reply, "OK - LoRa FEM RX gain off");
+      } else {
+        strcpy(reply, "Error: failed to apply LoRa FEM RX gain");
+      }
+    } else {
+      strcpy(reply, "Error: state must be on or off");
+    }
   } else if (memcmp(config, "radio ", 6) == 0) {
+    char tmp[64];
     strcpy(tmp, &config[6]);
     const char *parts[4];
     int num = mesh::Utils::parseTextParts(tmp, parts, 4);
@@ -730,7 +747,7 @@ void CommonCLI::handleSetCmd(uint32_t sender_timestamp, char* command, char* rep
   }
 }
 
-void CommonCLI::handleGetCmd(uint32_t sender_timestamp, char* command, char* reply) {
+void CommonCLI::handleGetCmd(uint32_t sender_timestamp, const char* command, char* reply) {
   const char* config = &command[4];
   if (memcmp(config, "dutycycle", 9) == 0) {
     float dc = 100.0f / (_prefs->airtime_factor + 1.0f);
@@ -754,6 +771,7 @@ void CommonCLI::handleGetCmd(uint32_t sender_timestamp, char* command, char* rep
   } else if (memcmp(config, "guest.password", 14) == 0) {
     sprintf(reply, "> %s", _prefs->guest_password);
   } else if (sender_timestamp == 0 && memcmp(config, "prv.key", 7) == 0) {  // from serial command line only
+    char tmp[65];
     uint8_t prv_key[PRV_KEY_SIZE];
     int len = _callbacks->getSelfId().writeTo(prv_key, PRV_KEY_SIZE);
     mesh::Utils::toHex(tmp, prv_key, len);
@@ -770,6 +788,12 @@ void CommonCLI::handleGetCmd(uint32_t sender_timestamp, char* command, char* rep
   } else if (memcmp(config, "radio.rxgain", 12) == 0) {
     sprintf(reply, "> %s", _prefs->rx_boosted_gain ? "on" : "off");
 #endif
+  } else if (memcmp(config, "radio.fem.rxgain", 16) == 0) {
+    if (!_board->canControlLoRaFemLna()) {
+      strcpy(reply, "Error: unsupported by this board");
+    } else {
+      sprintf(reply, "> %s", _board->isLoRaFemLnaEnabled() ? "on" : "off");
+    }
   } else if (memcmp(config, "radio", 5) == 0) {
     char freq[16], bw[16];
     strcpy(freq, StrHelper::ftoa(_prefs->freq));
