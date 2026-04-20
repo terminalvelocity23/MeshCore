@@ -99,6 +99,10 @@ void setup() {
   ui_task.begin(the_mesh.getNodePrefs(), FIRMWARE_BUILD_DATE, FIRMWARE_VERSION);
 #endif
 
+MESH_DEBUG_PRINTLN("Discovering neighbors after boot...");
+  delay(2000);                       // небольшая пауза для стабилизации радио
+  the_mesh.sendNodeDiscoverReq();
+ 
   // send out initial zero hop Advertisement to the mesh
 #if ENABLE_ADVERT_ON_BOOT == 1
   the_mesh.sendSelfAdvertisement(16000, false);
