@@ -162,6 +162,11 @@ protected:
   void clearPendingReqs() {
     pending_login = pending_status = pending_telemetry = pending_discovery = pending_req = 0;
   }
+  
+  void requestContactsSave() override {
+    dirty_contacts_expiry = 1; // Устанавливаем флаг для сохранения
+  }
+
 
 public:
   void savePrefs() { _store->savePrefs(_prefs, sensors.node_lat, sensors.node_lon); }

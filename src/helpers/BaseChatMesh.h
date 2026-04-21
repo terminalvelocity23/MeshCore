@@ -143,6 +143,7 @@ protected:
   void markConnectionActive(const ContactInfo& contact);
   ContactInfo* checkConnectionsAck(const uint8_t* data);
   void checkConnections();
+  virtual void requestContactsSave() { /* По умолчанию ничего не делаем */ }
 
 public:
   mesh::Packet* createSelfAdvert(const char* name);
@@ -173,4 +174,12 @@ public:
   int findChannelIdx(const mesh::GroupChannel& ch);
 
   void loop();
+  
+  private:
+  static const int MAX_DIRTY_CONTACTS = 10; // batch contact write
+  ContactInfo _dirty_contacts[MAX_DIRTY_CONTACTS];
+  uint8_t _dirty_count = 0;
+  unsigned long _dirty_write_timeout = 0;
+
+  void flushDirtyContacts(); // <-- Вспомогательный приватный метод
 };

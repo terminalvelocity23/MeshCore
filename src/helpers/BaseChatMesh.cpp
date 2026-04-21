@@ -164,8 +164,8 @@ void BaseChatMesh::onAdvertRecv(mesh::Packet* packet, const mesh::Identity& id, 
     from->sync_since = 0;
     from->shared_secret_valid = false;
   }
-  // update
-    putBlobByKey(id.pub_key, PUB_KEY_SIZE, temp_buf, plen);
+    // update
+    // putBlobByKey(id.pub_key, PUB_KEY_SIZE, temp_buf, plen); // <-- ЗАБЛОКИРОВАНО (переехало в кэш)
     StrHelper::strncpy(from->name, parser.getName(), sizeof(from->name));
     from->type = parser.getType();
     if (parser.hasLatLon()) {
@@ -176,7 +176,29 @@ void BaseChatMesh::onAdvertRecv(mesh::Packet* packet, const mesh::Identity& id, 
     from->lastmod = getRTCClock()->getCurrentTime();
 
   onDiscoveredContact(*from, is_new, packet->path_len, packet->path);       // let UI know
+
+// === НАША ЛОГИКА КЭШИРОВАНИЯ (ВМЕСТО СТАРОЙ) ===
+  // 1. Проверяем, есть ли место в кэше
+  if (_dirty_count < MAX_DIRTY_CONTACTS) {
+    // 2. Копируем контакт в кэш
+    _dirty_contacts[_dirty_count] = *from;
+    _dirty_count++;
+  } else {
+    MESH_DEBUG_PRINTLN("onAdvertRecv: dirty contacts cache full, forcing flush");
+    flushDirtyContacts(); // Принудительно сбрасываем, если переполнен
+    // После сброса можно снова попытаться добавить (но для простоты - не будем)
+  }
+  
+  // 3. Устанавливаем таймер на запись (15 минут = 900000 мс)
+  _dirty_write_timeout = millis() + 900000;
+
+  // 4. Если контакт новый (is_new), форсируем запись, чтобы не потерять
+  if (is_new) {
+    MESH_DEBUG_PRINTLN("onAdvertRecv: new contact, forcing flush");
+    flushDirtyContacts();
+  }
 }
+
 
 int BaseChatMesh::searchPeersByHash(const uint8_t* hash) {
   int n = 0;
@@ -942,4 +964,43 @@ void BaseChatMesh::loop() {
     releasePacket(_pendingLoopback);   // undo the obtainNewPacket()
     _pendingLoopback = NULL;
   }
+
+  // === НАША ПРОВЕРКА ТАЙМЕРА КЭША ===
+  if (_dirty_count > 0 && millis() > _dirty_write_timeout) {
+    MESH_DEBUG_PRINTLN("loop: dirty contacts timeout, flushing");
+    flushDirtyContacts();
+  }
 }
+// ========== НАШ НОВЫЙ МЕТОД ДЛЯ ПАКЕТНОЙ ЗАПИСИ КОНТАКТОВ ==========
+void BaseChatMesh::flushDirtyContacts() {
+  if (_dirty_count == 0) return; // Нечего писать
+
+  MESH_DEBUG_PRINTLN("flushDirtyContacts: writing %d cached contacts", _dirty_count);
+
+  for (uint8_t i = 0; i < _dirty_count; i++) {
+    // 1. Находим контакт в ОСНОВНОМ списке `contacts`
+    ContactInfo* c = lookupContactByPubKey(_dirty_contacts[i].id.pub_key, PUB_KEY_SIZE);
+    
+    // 2. Если нашли, обновляем его поля из кэша
+    if (c) {
+      // Обновляем только то, что могло измениться
+      StrHelper::strncpy(c->name, _dirty_contacts[i].name, sizeof(c->name));
+      c->type = _dirty_contacts[i].type;
+      c->gps_lat = _dirty_contacts[i].gps_lat;
+      c->gps_lon = _dirty_contacts[i].gps_lon;
+      c->last_advert_timestamp = _dirty_contacts[i].last_advert_timestamp;
+      c->lastmod = _dirty_contacts[i].lastmod;
+    } else {
+      // Если контакт не найден (что странно), просто пропускаем
+      MESH_DEBUG_PRINTLN("flushDirtyContacts: contact not found in main list!");
+    }
+  }
+
+  // 3. ВМЕСТО ПРЯМОГО ВЫЗОВА saveContacts() УСТАНАВЛИВАЕМ ФЛАГ "ГРЯЗНЫХ" КОНТАКТОВ
+  //    Это заставит MyMesh::loop() сохранить контакты при следующей возможности.
+        requestContactsSave();  
+  // 4. Обнуляем кэш
+  _dirty_count = 0;
+}
+
+
