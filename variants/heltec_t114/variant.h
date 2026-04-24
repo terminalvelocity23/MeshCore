@@ -77,7 +77,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Builtin LEDs
 
-#define LED_BUILTIN             (-1) // disable LED blink on flash write
+#define LED_BUILTIN             (35) // disable LED blink on flash write
 #define PIN_LED                 LED_BUILTIN
 #define LED_RED                 LED_BUILTIN
 #define LED_BLUE                (-1)            // No blue led, prevents Bluefruit flashing the green LED during advertising
