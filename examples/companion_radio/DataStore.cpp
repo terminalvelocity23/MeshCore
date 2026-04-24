@@ -611,6 +611,9 @@ uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_b
 }
 
 bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], uint8_t len) {
+  // === НАЧАЛО ЗАМЕРА ===
+  unsigned long start_time = millis();
+  
   char path[64];
   makeBlobPath(key, key_len, path, sizeof(path));
 
@@ -618,13 +621,21 @@ bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src
   if (f) {
     int n = f.write(src_buf, len);
     f.close();
+    
+    // === КОНЕЦ ЗАМЕРА ===
+    unsigned long duration = millis() - start_time;
+    MESH_DEBUG_PRINTLN("putBlobByKey took %lu ms", duration);
+    
     if (n == len) return true; // success!
-
-    _fs->remove(path); // blob was only partially written!
+    _fs->remove(path);
   }
-  return false; // error
+  
+  // === КОНЕЦ ЗАМЕРА (ошибка) ===
+  unsigned long duration = millis() - start_time;
+  MESH_DEBUG_PRINTLN("putBlobByKey FAILED after %lu ms", duration);
+  
+  return false;
 }
-
 bool DataStore::deleteBlobByKey(const uint8_t key[], int key_len) {
   char path[64];
   makeBlobPath(key, key_len, path, sizeof(path));
