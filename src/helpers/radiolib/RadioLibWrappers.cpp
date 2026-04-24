@@ -91,7 +91,7 @@ void RadioLibWrapper::loop() {
     }
     _floor_sample_sum = 0;
 
-    MESH_DEBUG_PRINTLN("RadioLibWrapper: noise_floor = %d", (int)_noise_floor);
+    // MESH_DEBUG_PRINTLN("RadioLibWrapper: noise_floor = %d", (int)_noise_floor);
   }
 }
 
@@ -116,7 +116,7 @@ int RadioLibWrapper::recvRaw(uint8_t* bytes, int sz) {
       if (len > sz) { len = sz; }
       int err = _radio->readData(bytes, len);
       if (err != RADIOLIB_ERR_NONE) {
-        MESH_DEBUG_PRINTLN("RadioLibWrapper: error: readData(%d)", err);
+      //  MESH_DEBUG_PRINTLN("RadioLibWrapper: error: readData(%d)", err);
         len = 0;
         n_recv_errors++;
       } else {

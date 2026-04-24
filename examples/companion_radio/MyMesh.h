@@ -193,7 +193,15 @@ private:
 
   // helpers, short-cuts
   void saveChannels() { _store->saveChannels(this); }
-  void saveContacts() { _store->saveContacts(this); }
+  void saveContacts() {
+  unsigned long start_time = millis();
+  MESH_DEBUG_PRINTLN("saveContacts START at %lu ms", start_time);
+  
+  _store->saveContacts(this);
+  
+  unsigned long duration = millis() - start_time;
+  MESH_DEBUG_PRINTLN("saveContacts took %lu ms (END at %lu ms)", duration, millis());
+}
 
   DataStore* _store;
   NodePrefs _prefs;

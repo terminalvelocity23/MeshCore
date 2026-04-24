@@ -534,6 +534,9 @@ uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_b
 }
 
 bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], uint8_t len) {
+  // === НАЧАЛО ЗАМЕРА ===
+  unsigned long start_time = millis();
+  
   if (len < PUB_KEY_SIZE+4+SIGNATURE_SIZE || len > MAX_ADVERT_PKT_LEN) return false;
   checkAdvBlobFile();
   File file = _getContactsChannelsFS()->open("/adv_blobs", FILE_O_WRITE);
@@ -566,10 +569,21 @@ bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src
     file.write((uint8_t *) &tmp, sizeof(tmp));
 
     file.close();
+    
+    // === КОНЕЦ ЗАМЕРА ===
+    unsigned long duration = millis() - start_time;
+    MESH_DEBUG_PRINTLN("putBlobByKey took %lu ms", duration);
+    
     return true;
   }
+  
+  // === КОНЕЦ ЗАМЕРА (ошибка) ===
+  unsigned long duration = millis() - start_time;
+  MESH_DEBUG_PRINTLN("putBlobByKey FAILED after %lu ms", duration);
+  
   return false; // error
 }
+
 bool DataStore::deleteBlobByKey(const uint8_t key[], int key_len) {
   return true; // this is just a stub on NRF52/STM32 platforms
 }
