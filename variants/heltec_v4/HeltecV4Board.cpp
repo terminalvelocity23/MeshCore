@@ -3,24 +3,33 @@
 void HeltecV4Board::begin() {
     ESP32Board::begin();
 
-
     pinMode(PIN_ADC_CTRL, OUTPUT);
-    digitalWrite(PIN_ADC_CTRL, LOW); // Initially inactive
+    digitalWrite(PIN_ADC_CTRL, LOW);
 
     loRaFEMControl.init();
-
     periph_power.begin();
     esp_reset_reason_t reason = esp_reset_reason();
     if (reason == ESP_RST_DEEPSLEEP) {
       long wakeup_source = esp_sleep_get_ext1_wakeup_status();
-      if (wakeup_source & (1 << P_LORA_DIO_1)) {  // received a LoRa packet (while in deep sleep)
+      if (wakeup_source & (1 << P_LORA_DIO_1)) {
         startup_reason = BD_STARTUP_RX_PACKET;
+      } else {
+        startup_reason = BD_STARTUP_DEEPSLEEP;
+      }
+    } else if (reason == ESP_RST_POWERON) {
+      startup_reason = BD_STARTUP_POWERON;
+    } else if (reason == ESP_RST_BROWNOUT) {
+      startup_reason = BD_STARTUP_BROWNOUT;
+    } else if (reason == ESP_RST_WDT) {
+      startup_reason = BD_STARTUP_HARDWARE_WDT;
+    } else if (reason == ESP_RST_SW) {
+      startup_reason = BD_STARTUP_SOFTWARE;
+    } else if (reason == ESP_RST_PANIC) {
+      startup_reason = BD_STARTUP_PANIC;
+    } else {
+      startup_reason = BD_STARTUP_NORMAL;  // на всякий случай
     }
-
-      rtc_gpio_hold_dis((gpio_num_t)P_LORA_NSS);
-      rtc_gpio_deinit((gpio_num_t)P_LORA_DIO_1);
-    }
-  }
+}
 
   void HeltecV4Board::onBeforeTransmit(void) {
     digitalWrite(P_LORA_TX_LED, HIGH);   // turn TX LED on

@@ -40,6 +40,12 @@ namespace mesh {
 
 #define  BD_STARTUP_NORMAL     0  // getStartupReason() codes
 #define  BD_STARTUP_RX_PACKET  1
+#define  BD_STARTUP_BROWNOUT    2  // Brownout reset (ESP32)
+#define  BD_STARTUP_HARDWARE_WDT 3  // Hardware WDT reset (ESP32)
+#define  BD_STARTUP_SOFTWARE    4  // Software reset (ESP32)
+#define  BD_STARTUP_PANIC       5  // Exception/panic reset (ESP32)
+#define  BD_STARTUP_DEEPSLEEP   6  // Wakeup from deep sleep (ESP32)
+#define  BD_STARTUP_POWERON     7  // Power-on reset (ESP32)
 
 class MainBoard {
 public:

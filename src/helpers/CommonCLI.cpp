@@ -886,11 +886,24 @@ void CommonCLI::handleGetCmd(uint32_t sender_timestamp, char* command, char* rep
 #else
     strcpy(reply, "ERROR: Power management not supported");
 #endif
-  } else if (memcmp(config, "pwrmgt.bootreason", 17) == 0) {
+    } else if (memcmp(config, "pwrmgt.bootreason", 17) == 0) {
 #ifdef NRF52_POWER_MANAGEMENT
     sprintf(reply, "> Reset: %s; Shutdown: %s",
       _board->getResetReasonString(_board->getResetReason()),
       _board->getShutdownReasonString(_board->getShutdownReason()));
+#elif defined(ESP32)
+    const char* reason_str = "Unknown";
+    switch (_board->getStartupReason()) {
+      case BD_STARTUP_POWERON:      reason_str = "Power-on reset"; break;
+      case BD_STARTUP_RX_PACKET:    reason_str = "Wakeup by LoRa packet"; break;
+      case BD_STARTUP_BROWNOUT:     reason_str = "Brownout reset"; break;
+      case BD_STARTUP_HARDWARE_WDT: reason_str = "Hardware WDT reset"; break;
+      case BD_STARTUP_SOFTWARE:     reason_str = "Software reset"; break;
+      case BD_STARTUP_PANIC:        reason_str = "Exception/panic reset"; break;
+      case BD_STARTUP_DEEPSLEEP:    reason_str = "Deep sleep wakeup"; break;
+      default:                      reason_str = "Unknown reset reason"; break;
+    }
+    sprintf(reply, "> Reset: %s", reason_str);
 #else
     strcpy(reply, "ERROR: Power management not supported");
 #endif

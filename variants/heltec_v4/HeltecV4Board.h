@@ -7,6 +7,8 @@
 #include "LoRaFEMControl.h"
 class HeltecV4Board : public ESP32Board {
 
+private:
+  esp_reset_reason_t _reset_reason; 
 public:
   RefCountedDigitalPin periph_power;
   LoRaFEMControl loRaFEMControl;
@@ -19,8 +21,8 @@ public:
   void powerOff() override;
   uint16_t getBattMilliVolts() override;
   const char* getManufacturerName() const override ;
+    // Управление LNA (FEM) для V4.3
   bool setLoRaFemLnaEnabled(bool enable) override;
   bool canControlLoRaFemLna() const override;
   bool isLoRaFemLnaEnabled() const override;
-
 };
