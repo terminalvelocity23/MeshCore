@@ -578,7 +578,8 @@ bool MyMesh::isChanBlacklisted(const mesh::Packet* packet) const {
   for (int b = 0; b < MAX_BLACKLIST_ENTRIES; b++) {
     if (_chan_blacklist[b].len == 0) continue;
     uint8_t avail = PATH_HASH_SIZE;
-    if (memcmp(_chan_blacklist[b].data, packet->payload, avail) == 0) return true;
+    uint8_t cmp_len = (_chan_blacklist[b].len < avail) ? _chan_blacklist[b].len : avail;
+    if (memcmp(packet->payload, _chan_blacklist[b].prefix, cmp_len) == 0) return true;
   }
 
   // Check #channel_name entries with test decryption
