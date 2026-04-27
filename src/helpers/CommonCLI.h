@@ -62,6 +62,8 @@ struct NodePrefs { // persisted to file
   uint8_t radio_fem_rxgain; // LoRa FEM RX gain setting
   uint8_t path_hash_mode;   // which path mode to use when sending
   uint8_t loop_detect;
+  uint16_t advert_ratelimit; // seconds, 0 = off. Rate limit for incoming flood adverts
+  uint8_t advert_jail;        // hours, 0 = off. Per-sender flood advert jail interval
 };
 
 class CommonCLICallbacks {
@@ -81,6 +83,9 @@ public:
   virtual void formatNeighborsReply(char *reply) = 0;
   virtual void removeNeighbor(const uint8_t* pubkey, int key_len) {
     // no op by default
+  };
+  virtual void formatAdvertJailReply(char *reply) {
+    strcpy(reply, "-none-");
   };
   virtual void formatStatsReply(char *reply) = 0;
   virtual void formatRadioStatsReply(char *reply) = 0;
