@@ -573,12 +573,12 @@ bool MyMesh::isChanBlacklisted(const mesh::Packet* packet) const {
   if (pt != PAYLOAD_TYPE_GRP_TXT && pt != PAYLOAD_TYPE_GRP_DATA) return false;
   if (packet->payload_len < PATH_HASH_SIZE) return false;
 
-  // Check hex prefix entries
+  // Check hex prefix entries against the channel-hash region only.
+  // Bytes after PATH_HASH_SIZE are MAC/ciphertext, not part of the stable channel identifier.
   for (int b = 0; b < MAX_BLACKLIST_ENTRIES; b++) {
     if (_chan_blacklist[b].len == 0) continue;
-    uint8_t avail   = (packet->payload_len < MAX_PATH_PREFIX_LEN) ? (uint8_t)packet->payload_len : MAX_PATH_PREFIX_LEN;
-    uint8_t cmp_len = (_chan_blacklist[b].len < avail) ? _chan_blacklist[b].len : avail;
-    if (memcmp(packet->payload, _chan_blacklist[b].prefix, cmp_len) == 0) return true;
+    uint8_t avail = PATH_HASH_SIZE;
+    if (memcmp(_chan_blacklist[b].data, packet->payload, avail) == 0) return true;
   }
 
   // Check #channel_name entries with test decryption
@@ -721,12 +721,17 @@ void MyMesh::deriveChanNameFilter(ChanNameFilter& entry, const char* name) {
 }
 
 bool MyMesh::addChanNameFilter(const char* name) {
-  // Check for duplicate
+  // Truncate name if too long
+  char safe_name[sizeof(ChanNameFilter::name)];
+  strncpy(safe_name, name, sizeof(safe_name) - 1);
+  safe_name[sizeof(safe_name) - 1] = '\0';
+  
+  // Check for duplicate using SAFE name
   for (int i = 0; i < _num_chan_name_filters; i++) {
-    if (strcmp(_chan_name_filters[i].name, name) == 0) return true; // already exists
+    if (strcmp(_chan_name_filters[i].name, safe_name) == 0) return true; // already exists
   }
   if (_num_chan_name_filters >= MAX_CHAN_NAME_FILTERS) return false; // full
-  deriveChanNameFilter(_chan_name_filters[_num_chan_name_filters], name);
+  deriveChanNameFilter(_chan_name_filters[_num_chan_name_filters], safe_name);
   _num_chan_name_filters++;
   return true;
 }

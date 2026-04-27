@@ -62,8 +62,8 @@ struct RepeaterStats {
 #endif
 
 #define MAX_PATH_PREFIX_LEN  4
-#define MAX_BLACKLIST_ENTRIES 16
-#define MAX_CHAN_NAME_FILTERS 8
+#define MAX_BLACKLIST_ENTRIES 64
+#define MAX_CHAN_NAME_FILTERS 32
 
 struct BlacklistEntry {
   uint8_t len;                          // 0 = empty slot
