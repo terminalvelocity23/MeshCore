@@ -524,24 +524,35 @@ void CommonCLI::handleSetCmd(uint32_t sender_timestamp, char* command, char* rep
       savePrefs();
       strcpy(reply, "OK");
     }
-  } else if (memcmp(config, "advert.ratelimit ", 17) == 0) {
-    int secs = _atoi(&config[17]);
-    if (secs < 0 || secs > 3600) {
+   } else if (memcmp(config, "advert.ratelimit ", 17) == 0) {
+    const char *value = &config[17];
+    if (*value == '-') {
       strcpy(reply, "Error: range is 0-3600 seconds (0=off)");
     } else {
-      _prefs->advert_ratelimit = (uint16_t)secs;
-      savePrefs();
-      strcpy(reply, "OK");
+      int secs = _atoi(value);
+      if (secs > 3600) {
+        strcpy(reply, "Error: range is 0-3600 seconds (0=off)");
+      } else {
+        _prefs->advert_ratelimit = (uint16_t)secs;
+        savePrefs();
+        strcpy(reply, "OK");
+      }
     }
   } else if (memcmp(config, "advert.jail ", 12) == 0) {
-    int hours = _atoi(&config[12]);
-    if (hours < 0 || hours > 168) {
+    const char *value = &config[12];
+    if (*value == '-') {
       strcpy(reply, "Error: range is 0-168 hours (0=off)");
     } else {
-      _prefs->advert_jail = (uint8_t)hours;
-      savePrefs();
-      strcpy(reply, "OK");
+      int hours = _atoi(value);
+      if (hours > 168) {
+        strcpy(reply, "Error: range is 0-168 hours (0=off)");
+      } else {
+        _prefs->advert_jail = (uint8_t)hours;
+        savePrefs();
+        strcpy(reply, "OK");
+      }
     }
+  
   } else if (memcmp(config, "guest.password ", 15) == 0) {
     StrHelper::strncpy(_prefs->guest_password, &config[15], sizeof(_prefs->guest_password));
     savePrefs();

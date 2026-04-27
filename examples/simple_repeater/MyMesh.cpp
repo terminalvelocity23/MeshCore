@@ -599,7 +599,7 @@ bool MyMesh::filterRecvFloodPacket(mesh::Packet* pkt) {
       }
 
       // Exit jail when count drops below 2
-      if (entry.jailed && entry.count < 2) {
+      if (entry.jailed && entry.count < 3) {
         entry.jailed = false;
       }
 
