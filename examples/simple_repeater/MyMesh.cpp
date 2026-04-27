@@ -547,9 +547,11 @@ uint32_t MyMesh::getDirectRetransmitDelay(const mesh::Packet *packet) {
 
 bool MyMesh::filterRecvFloodPacket(mesh::Packet* pkt) {
   // Per-sender advert jail: drop flood adverts from senders advertising too frequently
-  if (_prefs.advert_jail > 0 && pkt->getPayloadType() == PAYLOAD_TYPE_ADVERT
-      && pkt->payload_len >= PUB_KEY_SIZE + 4) {
-    unsigned long now = millis();
+  if (_prefs.advert_jail > 0 && pkt->getPayloadType() == PAYLOAD_TYPE_ADVERT) { //shortening it to include all adverts
+   //   && pkt->payload_len >= PUB_KEY_SIZE + 4) {
+       
+
+   unsigned long now = millis();
     unsigned long jail_interval_ms = (unsigned long)_prefs.advert_jail * 3600UL * 1000UL;
     const uint8_t* sender_key = &pkt->payload[0];  // pub_key is first in advert payload
 
