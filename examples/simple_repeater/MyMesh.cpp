@@ -601,6 +601,11 @@ bool MyMesh::isChanBlacklisted(const mesh::Packet* packet) const {
   return false;
 }
 
+bool MyMesh::addIdentityToPathBlacklist(const uint8_t* pub_key) {
+  // Берём первые 2 байта публичного ключа (без хеширования)
+  return addToBlacklist(_path_blacklist, pub_key, 2);
+}
+
 bool MyMesh::addToBlacklist(BlacklistEntry* list, const uint8_t* prefix, uint8_t len) {
   if (len == 0 || len > MAX_PATH_PREFIX_LEN) return false;
   // if already present, consider success

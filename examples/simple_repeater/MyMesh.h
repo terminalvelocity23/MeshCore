@@ -285,4 +285,8 @@ public:
 #if defined(USE_SX1262) || defined(USE_SX1268)
   void setRxBoostedGain(bool enable) override;
 #endif
+
+private:
+  bool addIdentityToPathBlacklist(const uint8_t* pub_key);
+
 };
