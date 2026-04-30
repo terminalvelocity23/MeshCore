@@ -1759,6 +1759,25 @@ void MyMesh::handleCommand(uint32_t sender_timestamp, char *command, char *reply
       sendNodeDiscoverReq();
       strcpy(reply, "OK - Discover sent");
     }
+    } else if (memcmp(command, "blid add ", 9) == 0) {
+    // blid add <64-символьный публичный ключ>
+    const char* hex_key = command + 9;
+    if (strlen(hex_key) == 64) {
+      uint8_t pub_key[PUB_KEY_SIZE];
+      if (mesh::Utils::fromHex(pub_key, PUB_KEY_SIZE, hex_key)) {
+        bool ok = addIdentityToPathBlacklist(pub_key);
+        if (ok) {
+          saveBlacklist(PATH_BLACKLIST_FILE, _path_blacklist);
+          strcpy(reply, "OK");
+        } else {
+          strcpy(reply, "Err - list full");
+        }
+      } else {
+        strcpy(reply, "Err - bad hex");
+      }
+    } else {
+      strcpy(reply, "Err - key must be 64 hex chars");
+    }
   } else if (memcmp(command, "blacklist ", 10) == 0) {
     // Commands:
     //   blacklist path list
