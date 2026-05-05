@@ -555,6 +555,9 @@ uint32_t MyMesh::getDirectRetransmitDelay(const mesh::Packet *packet) {
 bool MyMesh::isPathBlacklisted(const mesh::Packet* packet) const {
   uint8_t hash_size  = packet->getPathHashSize();
   uint8_t hash_count = packet->getPathHashCount();
+    if (hash_count > 63 || hash_size > 3) {
+    return false;  // невалидный path, не рискуем
+  }
   const uint8_t* ptr = packet->path;
   for (uint8_t h = 0; h < hash_count; h++, ptr += hash_size) {
     for (int b = 0; b < MAX_BLACKLIST_ENTRIES; b++) {
