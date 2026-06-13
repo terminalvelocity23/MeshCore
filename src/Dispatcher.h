@@ -194,8 +194,9 @@ public:
   bool millisHasNowPassed(unsigned long timestamp) const;
   unsigned long futureMillis(int millis_from_now) const;
 
-private:
   bool tryParsePacket(Packet* pkt, const uint8_t* raw, int len);
+
+private:
   void checkRecv();
   void checkSend();
   uint32_t _cad_led_off_time = 0;
