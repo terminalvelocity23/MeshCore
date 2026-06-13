@@ -94,10 +94,6 @@
 #define RESP_CODE_STATS               24   // v8+, second byte is stats type
 #define RESP_CODE_AUTOADD_CONFIG      25
 #define RESP_ALLOWED_REPEAT_FREQ      26
-#define RESP_CODE_CHANNEL_DATA_RECV   27
-#define RESP_CODE_DEFAULT_FLOOD_SCOPE 28
-
-#define MAX_CHANNEL_DATA_LENGTH       (MAX_FRAME_SIZE - 9)
 
 #define SEND_TIMEOUT_BASE_MILLIS        1000
 #define FLOOD_SEND_TIMEOUT_FACTOR       32.0f
