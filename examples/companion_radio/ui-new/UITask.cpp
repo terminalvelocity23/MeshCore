@@ -12,9 +12,9 @@
 #define BOOT_SCREEN_MILLIS   3000   // 3 seconds
 
 #ifdef PIN_STATUS_LED
-#define LED_ON_MILLIS     20
-#define LED_ON_MSG_MILLIS 200
-#define LED_CYCLE_MILLIS  4000
+#define LED_ON_MILLIS     5
+#define LED_ON_MSG_MILLIS 5
+#define LED_CYCLE_MILLIS  10000
 #endif
 
 #define LONG_PRESS_MILLIS   1200
@@ -241,7 +241,7 @@ public:
       for (int i = 0; i < UI_RECENT_LIST_SIZE; i++, y += 11) {
         auto a = &recent[i];
         if (a->name[0] == 0) continue;  // empty slot
-        int secs = _rtc->getCurrentTime() - a->recv_timestamp;
+        uint32_t secs = safeElapsedSecs(_rtc->getCurrentTime(), a->recv_timestamp);
         if (secs < 60) {
           sprintf(tmp, "%ds", secs);
         } else if (secs < 60*60) {
@@ -504,7 +504,7 @@ public:
 
     auto p = &unread[head];
 
-    int secs = _rtc->getCurrentTime() - p->timestamp;
+    uint32_t secs = safeElapsedSecs(_rtc->getCurrentTime(), p->timestamp);
     if (secs < 60) {
       sprintf(tmp, "%ds", secs);
     } else if (secs < 60*60) {
